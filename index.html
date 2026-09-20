@@ -1,0 +1,2304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A2540">
+<meta name="description" content="UNIVEN SAFE — a simple, secure way for students to report safety incidents and track their progress.">
+<title>UNIVEN SAFE — University Safety Platform</title>
+<style>
+:root{
+  --navy:#0A2540; --navy-700:#123A63; --navy-500:#1B4F80;
+  --blue:#2E7DD1; --blue-600:#2668B0; --blue-100:#DCEAF9; --blue-50:#EDF4FC;
+  --grey-50:#F6F8FB; --grey-100:#EEF2F7; --grey-200:#DFE6EE; --grey-300:#C9D3DF;
+  --grey-500:#6B7C8F; --grey-600:#54637A; --white:#FFFFFF;
+  --radius:14px; --radius-sm:10px;
+  --shadow:0 1px 2px rgba(10,37,64,.05), 0 2px 8px rgba(10,37,64,.06);
+  --shadow-md:0 6px 20px rgba(10,37,64,.10);
+  --header-h:60px; --nav-h:64px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.55;color:var(--navy);background:var(--grey-50);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;height:auto;display:block}
+h1,h2,h3,h4{color:var(--navy);line-height:1.25;margin:0 0 .5rem}
+h1{font-size:1.65rem;letter-spacing:-.02em}
+h2{font-size:1.25rem;letter-spacing:-.01em}
+h3{font-size:1.05rem}
+p{margin:0 0 .75rem}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:6px}
+.skip-link{position:absolute;left:-9999px;top:0;background:var(--navy);color:#fff;padding:10px 16px;z-index:200;border-radius:0 0 8px 0}
+.skip-link:focus{left:0}
+.container{width:100%;max-width:1120px;margin:0 auto;padding:0 16px}
+.narrow{max-width:640px;margin:0 auto}
+.page{padding:20px 0 40px;min-height:60vh}
+.page.has-bottomnav{padding-bottom:calc(var(--nav-h) + 32px + env(safe-area-inset-bottom))}
+.stack>*+*{margin-top:16px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.row-between{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.spacer{flex:1}
+.topbar{position:sticky;top:0;z-index:60;background:var(--navy);color:#fff;box-shadow:0 1px 0 rgba(255,255,255,.08), var(--shadow)}
+.topbar-inner{max-width:1120px;margin:0 auto;padding:0 16px;height:var(--header-h);display:flex;align-items:center;gap:14px}
+.brand{display:inline-flex;align-items:center;gap:9px;color:#fff;font-weight:800;letter-spacing:.04em;font-size:1rem;text-decoration:none;white-space:nowrap}
+.brand:hover{text-decoration:none}
+.brand svg{flex:none;color:#7FB6EC}
+.brand strong{font-weight:800;color:#7FB6EC}
+.topnav{display:none;gap:4px;margin-left:14px}
+.topnav a{color:#C9D9EA;padding:8px 12px;border-radius:8px;font-size:.9rem;font-weight:600;text-decoration:none}
+.topnav a:hover{background:rgba(255,255,255,.08);color:#fff;text-decoration:none}
+.topnav a.active{background:rgba(127,182,236,.18);color:#fff}
+.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.icon-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#fff;border-radius:10px;width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.icon-btn:hover{background:rgba(255,255,255,.16)}
+@media(min-width:900px){.topnav{display:flex}.has-topnav .menu-btn{display:none}}
+.bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:70;background:#fff;border-top:1px solid var(--grey-200);display:flex;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -2px 12px rgba(10,37,64,.06)}
+.bottomnav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:9px 4px 8px;min-height:var(--nav-h);color:var(--grey-500);font-size:.68rem;font-weight:700;letter-spacing:.01em;text-decoration:none}
+.bottomnav a:hover{text-decoration:none;color:var(--navy-500)}
+.bottomnav a.active{color:var(--navy)}
+.bottomnav a.active svg{color:var(--blue)}
+@media(min-width:900px){.bottomnav{display:none}}
+.admin-layout{display:block}
+.admin-side{display:none}
+@media(min-width:900px){
+  .admin-layout{display:grid;grid-template-columns:236px 1fr;gap:0;align-items:start;max-width:1280px;margin:0 auto}
+  .admin-side{display:block;position:sticky;top:var(--header-h);height:calc(100vh - var(--header-h));padding:20px 12px;background:#fff;border-right:1px solid var(--grey-200);overflow-y:auto}
+  .admin-side a{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:10px;color:var(--grey-600);font-weight:600;font-size:.93rem;text-decoration:none;margin-bottom:3px}
+  .admin-side a:hover{background:var(--grey-50);color:var(--navy);text-decoration:none}
+  .admin-side a.active{background:var(--blue-50);color:var(--navy);font-weight:700}
+  .admin-side a.active svg{color:var(--blue)}
+  .admin-side .side-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--grey-500);font-weight:800;padding:14px 13px 6px}
+}
+.drawer-overlay{position:fixed;inset:0;background:rgba(10,37,64,.45);z-index:90;opacity:0;pointer-events:none;transition:opacity .18s ease}
+.drawer-overlay.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;left:0;bottom:0;width:280px;max-width:84vw;z-index:100;background:#fff;transform:translateX(-102%);transition:transform .22s ease;display:flex;flex-direction:column;box-shadow:var(--shadow-md)}
+.drawer.open{transform:translateX(0)}
+.drawer-head{background:var(--navy);color:#fff;padding:16px;display:flex;align-items:center;justify-content:space-between}
+.drawer-body{padding:12px;overflow-y:auto;flex:1}
+.drawer-body a{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:10px;color:var(--navy);font-weight:600;text-decoration:none;margin-bottom:2px}
+.drawer-body a:hover{background:var(--grey-50);text-decoration:none}
+.drawer-body a.active{background:var(--blue-50);font-weight:700}
+.drawer-body a.active svg{color:var(--blue)}
+.card{background:#fff;border:1px solid var(--grey-200);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.card--flush{padding:0;overflow:hidden}
+.card-head{padding:16px 18px;border-bottom:1px solid var(--grey-200);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.card-head h2,.card-head h3{margin:0}
+.card-body{padding:18px}
+.card-foot{padding:14px 18px;border-top:1px solid var(--grey-200);background:var(--grey-50);border-radius:0 0 var(--radius) var(--radius)}
+.section-title{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--grey-500);font-weight:800;margin:26px 0 12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:10px;border:1px solid transparent;font-weight:700;font-size:.93rem;cursor:pointer;text-decoration:none;min-height:46px;transition:background-color .12s ease,border-color .12s ease,color .12s ease;text-align:center}
+.btn:hover{text-decoration:none}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:hover:not(:disabled){background:var(--navy-700)}
+.btn-accent{background:var(--blue);color:#fff}
+.btn-accent:hover:not(:disabled){background:var(--blue-600)}
+.btn-outline{background:#fff;color:var(--navy);border-color:var(--grey-300)}
+.btn-outline:hover:not(:disabled){border-color:var(--navy);background:var(--grey-50)}
+.btn-outline-light{background:transparent;color:#fff;border-color:rgba(255,255,255,.5)}
+.btn-outline-light:hover:not(:disabled){background:rgba(255,255,255,.12);border-color:#fff}
+.btn-ghost{background:transparent;color:#fff;border-color:transparent}
+.btn-ghost:hover:not(:disabled){background:rgba(255,255,255,.12)}
+.btn-soft{background:var(--blue-50);color:var(--navy);border-color:var(--blue-100)}
+.btn-soft:hover:not(:disabled){background:var(--blue-100)}
+.btn-sm{padding:7px 13px;min-height:38px;font-size:.85rem;border-radius:8px}
+.btn-lg{padding:14px 24px;min-height:52px;font-size:1rem}
+.btn-block{width:100%}
+.field{margin-bottom:16px}
+.label{display:block;font-weight:700;font-size:.86rem;color:var(--navy);margin-bottom:6px}
+.label .req{color:var(--blue)}
+.input,.select,.textarea{width:100%;padding:12px 13px;border:1px solid var(--grey-300);border-radius:10px;background:#fff;color:var(--navy);font-size:1rem;font-family:inherit;min-height:48px;transition:border-color .12s ease, box-shadow .12s ease}
+.textarea{min-height:120px;resize:vertical;line-height:1.5}
+.select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2354637A' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:40px}
+.input:focus,.select:focus,.textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-50)}
+.input[aria-invalid="true"],.select[aria-invalid="true"],.textarea[aria-invalid="true"]{border-color:#B23B3B}
+.input:disabled,.textarea:disabled{background:var(--grey-100);color:var(--grey-600);cursor:not-allowed}
+.hint{font-size:.8rem;color:var(--grey-500);margin-top:5px}
+.error-text{font-size:.82rem;color:#B23B3B;font-weight:600;margin-top:5px;display:flex;gap:6px;align-items:flex-start}
+.form-grid{display:grid;gap:0 16px}
+@media(min-width:640px){.form-grid.two{grid-template-columns:1fr 1fr}}
+.file-drop{border:1.5px dashed var(--grey-300);border-radius:var(--radius-sm);background:var(--grey-50);padding:18px;text-align:center;cursor:pointer;display:block}
+.file-drop:hover{border-color:var(--blue);background:var(--blue-50)}
+.file-drop input{display:none}
+.file-name{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 12px;background:var(--blue-50);border:1px solid var(--blue-100);border-radius:10px;font-size:.86rem}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;font-size:.75rem;font-weight:800;border:1px solid transparent;white-space:nowrap;letter-spacing:.01em}
+.badge svg{width:14px;height:14px;flex:none}
+.st-pending{background:var(--grey-100);color:var(--grey-600);border-color:var(--grey-300)}
+.st-review{background:var(--blue-50);color:var(--blue-600);border-color:var(--blue-100)}
+.st-progress{background:var(--navy);color:#fff;border-color:var(--navy)}
+.st-resolved{background:#fff;color:var(--navy);border-color:var(--navy)}
+.st-closed{background:var(--grey-50);color:var(--grey-500);border-color:var(--grey-200)}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:700px){.stats{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1000px){.stats{grid-template-columns:repeat(5,1fr)}}
+.stat{background:#fff;border:1px solid var(--grey-200);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.stat .stat-label{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--grey-500)}
+.stat .stat-value{font-size:1.9rem;font-weight:800;color:var(--navy);line-height:1.1;margin-top:6px}
+.stat.accent{background:var(--navy);border-color:var(--navy)}
+.stat.accent .stat-label{color:#9CC4EA}
+.stat.accent .stat-value{color:#fff}
+.tiles{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:560px){.tiles{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:900px){.tiles{grid-template-columns:repeat(3,1fr)}}
+.tile{display:flex;align-items:center;gap:14px;padding:18px;background:#fff;border:1px solid var(--grey-200);border-radius:var(--radius);box-shadow:var(--shadow);text-decoration:none;color:var(--navy);min-height:86px;transition:border-color .12s ease, transform .12s ease}
+.tile:hover{border-color:var(--blue);transform:translateY(-1px);text-decoration:none}
+.tile .tile-icon{width:48px;height:48px;flex:none;border-radius:12px;background:var(--blue-50);color:var(--blue-600);display:flex;align-items:center;justify-content:center}
+.tile.urgent .tile-icon{background:var(--navy);color:#fff}
+.tile .tile-title{font-weight:800;font-size:1rem}
+.tile .tile-sub{font-size:.82rem;color:var(--grey-500);line-height:1.35}
+.report-card{display:block;background:#fff;border:1px solid var(--grey-200);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);text-decoration:none;color:inherit}
+.report-card:hover{border-color:var(--blue);text-decoration:none}
+.report-card .rc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+.report-card .rc-id{font-weight:800;font-size:.95rem;color:var(--navy);letter-spacing:.02em}
+.report-card .rc-meta{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:.87rem}
+.report-card .rc-meta dt{color:var(--grey-500);font-weight:600}
+.report-card .rc-meta dd{margin:0;color:var(--navy);font-weight:600}
+.data-row{display:grid;gap:10px;padding:14px 16px;border-bottom:1px solid var(--grey-200);text-decoration:none;color:inherit}
+.data-row:last-child{border-bottom:none}
+.data-row:hover{background:var(--grey-50);text-decoration:none}
+.data-row .dr-line{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.data-row .dr-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--grey-500);font-weight:800}
+@media(min-width:820px){
+  .data-row{grid-template-columns:120px 1.1fr 1fr 1fr 150px 130px;align-items:center;gap:12px}
+  .data-row .dr-mobile-label{display:none}
+  .data-head{display:grid;grid-template-columns:120px 1.1fr 1fr 1fr 150px 130px;gap:12px;padding:11px 16px;background:var(--grey-50);border-bottom:1px solid var(--grey-200);font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--grey-500);font-weight:800}
+}
+@media(max-width:819px){
+  .data-head{display:none}
+  .data-row .dr-cell{display:flex;justify-content:space-between;gap:12px}
+  .data-row .dr-cell::before{content:attr(data-label);font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--grey-500);font-weight:800}
+}
+.hero{background:var(--navy);color:#fff;padding:56px 0 60px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-120px;top:-120px;width:380px;height:380px;border-radius:50%;background:rgba(46,125,209,.16)}
+.hero-inner{max-width:1120px;margin:0 auto;padding:0 16px;position:relative;z-index:1}
+.hero-eyebrow{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#9CC4EA;border:1px solid rgba(156,196,234,.35);padding:5px 12px;border-radius:999px;margin-bottom:18px}
+.hero h1{color:#fff;font-size:2.6rem;letter-spacing:-.03em;margin-bottom:8px}
+.hero-tag{font-size:1.15rem;font-weight:700;color:#7FB6EC;margin-bottom:16px}
+.hero-text{font-size:1rem;color:#C9D9EA;max-width:600px;margin-bottom:28px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+@media(max-width:520px){.hero{padding:40px 0 44px}.hero h1{font-size:2rem}.hero-actions .btn{width:100%}}
+.landing-section{padding:44px 0;border-bottom:1px solid var(--grey-200)}
+.landing-section:last-of-type{border-bottom:none}
+.landing-section h2{margin-bottom:16px}
+.feature-grid{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:640px){.feature-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:900px){.feature-grid{grid-template-columns:repeat(3,1fr)}}
+.feature{background:#fff;border:1px solid var(--grey-200);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.feature .f-icon{width:44px;height:44px;border-radius:11px;background:var(--blue-50);color:var(--blue-600);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.feature h3{margin-bottom:6px}
+.feature p{font-size:.9rem;color:var(--grey-600);margin:0}
+.steps{counter-reset:s;display:grid;gap:14px}
+@media(min-width:700px){.steps{grid-template-columns:repeat(4,1fr)}}
+.step{background:#fff;border:1px solid var(--grey-200);border-radius:var(--radius);padding:18px;position:relative;box-shadow:var(--shadow)}
+.step::before{counter-increment:s;content:counter(s);display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-weight:800;font-size:.85rem;margin-bottom:10px}
+.step h3{font-size:.98rem}
+.step p{font-size:.86rem;color:var(--grey-600);margin:0}
+.site-footer{background:var(--navy);color:#9CC4EA;padding:32px 0;font-size:.86rem}
+.site-footer strong{color:#fff}
+.alert{display:flex;gap:11px;padding:13px 15px;border-radius:var(--radius-sm);font-size:.9rem;border:1px solid var(--grey-200);background:var(--grey-50);align-items:flex-start}
+.alert svg{flex:none;margin-top:2px}
+.alert-info{background:var(--blue-50);border-color:var(--blue-100);color:var(--navy-700)}
+.alert-warn{background:#FFF6E8;border-color:#F0D9AE;color:#7A5312}
+.alert-success{background:#EAF6EF;border-color:#BFE0CD;color:#1B5E3A}
+.alert-error{background:#FDECEC;border-color:#F3C4C4;color:#8E2F2F}
+.auth-wrap{min-height:100vh;display:flex;flex-direction:column;background:var(--grey-50)}
+.auth-main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:28px 16px 48px}
+.auth-card{width:100%;max-width:460px;background:#fff;border:1px solid var(--grey-200);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow-md)}
+.auth-head{text-align:center;margin-bottom:22px}
+.auth-head .auth-icon{width:56px;height:56px;border-radius:15px;background:var(--navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px}
+.auth-head h1{font-size:1.4rem;margin-bottom:4px}
+.auth-head p{color:var(--grey-600);font-size:.9rem;margin:0}
+.confirm-box{text-align:center;padding:34px 20px}
+.confirm-check{width:76px;height:76px;border-radius:50%;background:var(--blue-50);color:var(--blue-600);display:inline-flex;align-items:center;justify-content:center;margin-bottom:18px;border:2px solid var(--blue-100)}
+.confirm-box h1{font-size:1.3rem;letter-spacing:.02em}
+.report-id-box{display:inline-block;background:var(--navy);color:#fff;font-weight:800;letter-spacing:.08em;padding:12px 22px;border-radius:12px;font-size:1.15rem;margin:6px 0 14px}
+.detail-list{display:grid;gap:0}
+.detail-list .dl-row{display:grid;grid-template-columns:1fr;gap:2px;padding:13px 0;border-bottom:1px solid var(--grey-200)}
+.detail-list .dl-row:last-child{border-bottom:none}
+.detail-list .dl-key{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--grey-500);font-weight:800}
+.detail-list .dl-val{font-size:.96rem;color:var(--navy);font-weight:600;word-break:break-word}
+@media(min-width:640px){.detail-list .dl-row{grid-template-columns:190px 1fr;align-items:start;gap:14px}.detail-list .dl-key{padding-top:2px}}
+.timeline{list-style:none;margin:0;padding:0;position:relative}
+.timeline li{position:relative;padding:0 0 18px 26px;border-left:2px solid var(--grey-200)}
+.timeline li:last-child{border-left-color:transparent;padding-bottom:0}
+.timeline li::before{content:"";position:absolute;left:-7px;top:4px;width:12px;height:12px;border-radius:50%;background:#fff;border:2.5px solid var(--blue)}
+.timeline .tl-head{font-weight:800;font-size:.88rem;color:var(--navy)}
+.timeline .tl-time{font-size:.78rem;color:var(--grey-500);margin-bottom:3px}
+.timeline .tl-body{font-size:.9rem;color:var(--navy-700)}
+.empty{text-align:center;padding:44px 20px;color:var(--grey-500)}
+.empty .empty-icon{width:62px;height:62px;border-radius:50%;background:var(--grey-100);color:var(--grey-500);display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px}
+.empty h3{color:var(--navy);margin-bottom:4px}
+.empty p{font-size:.9rem;margin-bottom:16px}
+.spinner{width:17px;height:17px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;flex:none}
+.spinner.dark{border-color:var(--grey-300);border-top-color:var(--navy)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.spinner{animation-duration:1.6s}*{transition:none!important}}
+.toast{position:fixed;left:50%;bottom:calc(var(--nav-h) + 18px);transform:translate(-50%,20px);z-index:200;background:var(--navy);color:#fff;padding:12px 18px;border-radius:10px;font-size:.88rem;font-weight:600;box-shadow:var(--shadow-md);opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;max-width:calc(100vw - 32px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.error{background:#8E2F2F}
+.toast.success{background:#1B5E3A}
+.skeleton{background:linear-gradient(90deg,var(--grey-100) 25%,var(--grey-200) 37%,var(--grey-100) 63%);background-size:400% 100%;animation:shimmer 1.3s ease infinite;border-radius:8px;height:14px;margin-bottom:10px}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+.divider{height:1px;background:var(--grey-200);margin:18px 0;border:0}
+.text-muted{color:var(--grey-500)}
+.text-sm{font-size:.86rem}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.02em}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.evidence-thumb{max-width:100%;max-height:340px;border-radius:10px;border:1px solid var(--grey-200);object-fit:contain;background:var(--grey-50)}
+.boot-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:var(--grey-500);font-size:.9rem}
+.boot-screen .spinner{width:28px;height:28px;border-width:3px;border-color:var(--grey-300);border-top-color:var(--navy)}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<div id="app"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+/* ============================================================================
+   UNIVEN SAFE — Firebase edition (fully debugged)
+   ============================================================================ */
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import {
+  getFirestore, collection, doc, setDoc, getDoc, addDoc, updateDoc,
+  query, where, orderBy, onSnapshot, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+/* ---------------------------------------------------------------------------
+   FIREBASE CONFIG
+   --------------------------------------------------------------------------- */
+const firebaseConfig = {
+  apiKey: "AIzaSyBHO6OAqRBd90vX-2owgNHo594WTcPxT2A",
+  authDomain: "univen-safe.firebaseapp.com",
+  projectId: "univen-safe",
+  storageBucket: "univen-safe.firebasestorage.app",
+  messagingSenderId: "652770456670",
+  appId: "1:652770456670:web:855f10f84a45ead629b0cf",
+  measurementId: "G-67K9EMFK63"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth        = getAuth(firebaseApp);
+const firestore   = getFirestore(firebaseApp);
+
+const DEBUG = true;
+function dbg(...args)    { if (DEBUG) console.log("[UNIVEN SAFE]", ...args); }
+function dbgErr(...args) { console.error("[UNIVEN SAFE]", ...args); }
+
+/* ---------------------------------------------------------------------------
+   1. UTILITIES
+   --------------------------------------------------------------------------- */
+const $  = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+function esc(value) {
+  return String(value == null ? "" : value).replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+
+function normaliseEmail(email) {
+  return String(email).replace(/[\s\u00A0\u200B\uFEFF\u2028\u2029]/g, "").toLowerCase();
+}
+
+const MONTHS = ["January","February","March","April","May","June","July",
+                "August","September","October","November","December"];
+
+function fmtDate(value) {
+  if (!value) return "—";
+  const d = new Date(value.length === 10 ? value + "T00:00:00" : value);
+  if (isNaN(d)) return esc(value);
+  return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
+function fmtTime(value) {
+  if (!value) return "";
+  const [h, m] = String(value).split(":").map(Number);
+  if (isNaN(h)) return esc(value);
+  const suffix = h >= 12 ? "PM" : "AM";
+  const hour12 = h % 12 === 0 ? 12 : h % 12;
+  return `${hour12}:${String(m || 0).padStart(2, "0")} ${suffix}`;
+}
+function fmtDateTime(iso) {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  if (isNaN(d)) return "—";
+  return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}, ` +
+         `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+function todayISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+function nowHM() {
+  const d = new Date();
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
+let toastTimer = null;
+function toast(message, type = "") {
+  const el = $("#toast");
+  if (!el) return;
+  el.textContent = message;
+  el.className = "toast show" + (type ? " " + type : "");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = "toast"; }, 3400);
+}
+
+/* ---------------------------------------------------------------------------
+   2. ICONS
+   --------------------------------------------------------------------------- */
+const SVG_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"';
+const I = {
+  shield:   `${SVG_OPEN} width="22" height="22"><path d="M12 3 4.5 6v6.2c0 4.6 3.2 7.6 7.5 8.8 4.3-1.2 7.5-4.2 7.5-8.8V6L12 3Z"/><path d="m9 12.2 2.1 2.1L15.4 10"/></svg>`,
+  shieldSm: `${SVG_OPEN} width="20" height="20"><path d="M12 3 4.5 6v6.2c0 4.6 3.2 7.6 7.5 8.8 4.3-1.2 7.5-4.2 7.5-8.8V6L12 3Z"/><path d="m9 12.2 2.1 2.1L15.4 10"/></svg>`,
+  home:     `${SVG_OPEN} width="22" height="22"><path d="M3 10.6 12 3.5l9 7.1"/><path d="M5.4 9.6V20.5h13.2V9.6"/><path d="M10 20.5v-5.4h4v5.4"/></svg>`,
+  alert:    `${SVG_OPEN} width="22" height="22"><path d="M12 3.6 2.4 20.4h19.2L12 3.6Z"/><path d="M12 9.6v4.6"/><circle cx="12" cy="17.4" r="1.05" fill="currentColor" stroke="none"/></svg>`,
+  list:     `${SVG_OPEN} width="22" height="22"><path d="M8.5 6.5h12M8.5 12h12M8.5 17.5h12"/><circle cx="4" cy="6.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="4" cy="17.5" r="1.4" fill="currentColor" stroke="none"/></svg>`,
+  user:     `${SVG_OPEN} width="22" height="22"><circle cx="12" cy="8" r="3.8"/><path d="M4.6 20.4c0-3.7 3.4-5.9 7.4-5.9s7.4 2.2 7.4 5.9"/></svg>`,
+  phone:    `${SVG_OPEN} width="22" height="22"><path d="M21 16.6v2.6a1.7 1.7 0 0 1-1.9 1.7 17.4 17.4 0 0 1-7.6-2.7 17.1 17.1 0 0 1-5.3-5.3A17.4 17.4 0 0 1 3.5 5.2 1.7 1.7 0 0 1 5.2 3.4h2.6a1.7 1.7 0 0 1 1.7 1.5c.1.9.3 1.7.6 2.5a1.7 1.7 0 0 1-.4 1.8l-1.1 1.1a13.7 13.7 0 0 0 5.2 5.2l1.1-1.1a1.7 1.7 0 0 1 1.8-.4c.8.3 1.6.5 2.5.6a1.7 1.7 0 0 1 1.5 1.7Z"/></svg>`,
+  info:     `${SVG_OPEN} width="20" height="20"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2"/><circle cx="12" cy="7.9" r="1.05" fill="currentColor" stroke="none"/></svg>`,
+  logout:   `${SVG_OPEN} width="20" height="20"><path d="M15 4.5h3.2a1.8 1.8 0 0 1 1.8 1.8v11.4a1.8 1.8 0 0 1-1.8 1.8H15"/><path d="M10.5 16.2 14.7 12l-4.2-4.2"/><path d="M14.7 12H4.5"/></svg>`,
+  menu:     `${SVG_OPEN} width="22" height="22"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`,
+  close:    `${SVG_OPEN} width="22" height="22"><path d="M6 6 18 18M18 6 6 18"/></svg>`,
+  search:   `${SVG_OPEN} width="18" height="18"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>`,
+  check:    `${SVG_OPEN} width="18" height="18"><path d="m5 12.5 4.6 4.6L19 7.4"/></svg>`,
+  checkBig: `${SVG_OPEN} width="36" height="36" stroke-width="2.2"><path d="m5 12.5 4.6 4.6L19 7.4"/></svg>`,
+  clock:    `${SVG_OPEN} width="14" height="14"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.4l3.4 2"/></svg>`,
+  eye:      `${SVG_OPEN} width="14" height="14"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>`,
+  loader:   `${SVG_OPEN} width="14" height="14"><path d="M12 3.5v3.2M12 17.3v3.2M20.5 12h-3.2M6.7 12H3.5M18 6l-2.3 2.3M8.3 15.7 6 18M18 18l-2.3-2.3M8.3 8.3 6 6"/></svg>`,
+  lock:     `${SVG_OPEN} width="14" height="14"><rect x="4.5" y="10.5" width="15" height="9.5" rx="2"/><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/></svg>`,
+  upload:   `${SVG_OPEN} width="22" height="22"><path d="M12 16V4.8"/><path d="m7.6 9 4.4-4.4L16.4 9"/><path d="M4.5 15.5v2.8a1.8 1.8 0 0 0 1.8 1.8h11.4a1.8 1.8 0 0 0 1.8-1.8v-2.8"/></svg>`,
+  chevron:  `${SVG_OPEN} width="18" height="18"><path d="m9 6 6 6-6 6"/></svg>`,
+  mail:     `${SVG_OPEN} width="18" height="18"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6.3 8.5-6.3"/></svg>`,
+  key:      `${SVG_OPEN} width="18" height="18"><circle cx="8" cy="12" r="3.6"/><path d="M11.6 12H21"/><path d="M17.4 12v3.4M20 12v2.4"/></svg>`,
+  id:       `${SVG_OPEN} width="18" height="18"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2.1"/><path d="M5.6 16.4c.5-1.6 1.9-2.4 3.4-2.4s2.9.8 3.4 2.4"/><path d="M15.4 10h3.2M15.4 13.4h3.2"/></svg>`,
+  grid:     `${SVG_OPEN} width="20" height="20"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg>`,
+  students: `${SVG_OPEN} width="20" height="20"><circle cx="9" cy="8.4" r="3.4"/><path d="M2.8 19.6c0-3.2 2.9-5.1 6.2-5.1s6.2 1.9 6.2 5.1"/><path d="M16.4 5.6a3.2 3.2 0 0 1 0 6.2"/><path d="M18 14.9c2 .6 3.4 2.1 3.4 4.3"/></svg>`,
+  settings: `${SVG_OPEN} width="20" height="20"><circle cx="12" cy="12" r="3.1"/><path d="M19.6 14.4a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.4l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0-1.2-2.9h-.2a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.4-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 1-1.5v-.2a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.5 1h.2a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>`,
+  file:     `${SVG_OPEN} width="18" height="18"><path d="M13.5 3.5H7a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-5.5-5.5Z"/><path d="M13.5 3.5V9H19"/></svg>`,
+  refresh:  `${SVG_OPEN} width="18" height="18"><path d="M20.5 12a8.5 8.5 0 1 1-2.5-6"/><path d="M20.5 4.5V10h-5.5"/></svg>`,
+  back:     `${SVG_OPEN} width="18" height="18"><path d="M15 6 9 12l6 6"/></svg>`
+};
+
+/* ---------------------------------------------------------------------------
+   3. CONSTANTS
+   --------------------------------------------------------------------------- */
+const STATUSES = ["Pending", "Under Review", "In Progress", "Resolved", "Closed"];
+const STATUS_META = {
+  "Pending":      { cls: "st-pending",  icon: "clock",  label: "Pending" },
+  "Under Review": { cls: "st-review",   icon: "eye",    label: "Under Review" },
+  "In Progress":  { cls: "st-progress", icon: "loader", label: "In Progress" },
+  "Resolved":     { cls: "st-resolved", icon: "check",  label: "Resolved" },
+  "Closed":       { cls: "st-closed",   icon: "lock",   label: "Closed" }
+};
+const INCIDENT_TYPES = [
+  "Theft", "Assault", "Harassment", "Suspicious Activity", "Unsafe Area",
+  "Medical Emergency", "Fire", "Property Damage", "Other"
+];
+
+const EMERGENCY_CONTACTS = [
+  { name: "Campus Security (24 hours)", number: "015 962 8000", note: "Primary contact for all on-campus incidents." },
+  { name: "Ambulance / Medical Emergency", number: "10177", note: "National ambulance and medical response." },
+  { name: "South African Police Service", number: "10111", note: "Crime, assault and theft reporting." },
+  { name: "Fire Brigade", number: "10177", note: "Fire and rescue response." },
+  { name: "Student Counselling & Support", number: "015 962 8000", note: "Confidential emotional and psychological support." }
+];
+
+function defaultSafety() {
+  return [
+    { id: "personal", title: "Personal Safety", items: [
+      "Stay aware of your surroundings — avoid walking with earphones in or while looking at your phone.",
+      "Walk in well-lit areas and preferably in groups, especially after dark.",
+      "Keep valuables out of sight and never leave bags or laptops unattended.",
+      "Tell a trusted friend where you are going and when you expect to be back.",
+      "Trust your instincts. If a situation feels unsafe, leave immediately and go to a busy area."
+    ]},
+    { id: "campus", title: "Campus Safety", items: [
+      "Always carry your student card and present it when requested at campus entrances.",
+      "Use designated walkways and pedestrian routes rather than shortcuts through isolated areas.",
+      "Lock your residence room even for short absences, and never prop open security doors.",
+      "Do not allow strangers into residence buildings or let them follow you through access gates.",
+      "Report broken lights, damaged fences and overgrown areas so they can be fixed quickly."
+    ]},
+    { id: "procedures", title: "Emergency Procedures", items: [
+      "Know the nearest exit routes and assembly points for every building you use.",
+      "Familiarise yourself with the location of fire extinguishers and first-aid kits.",
+      "Never use lifts during a fire evacuation — always use the stairs.",
+      "Follow the instructions of safety personnel and emergency responders at all times.",
+      "Do not return to a building until you are told it is safe to do so."
+    ]},
+    { id: "reporting", title: "Reporting Incidents", items: [
+      "Report every incident, even minor ones — patterns matter and help prevent escalation.",
+      "Give an accurate location and as much detail as you can remember while it is fresh.",
+      "Upload photographs or documents as evidence where it is safe to do so.",
+      "In a life-threatening emergency, phone Campus Security first, then log the incident in UNIVEN SAFE.",
+      "You can track the progress of every report you submit under My Reports."
+    ]},
+    { id: "whattodo", title: "What To Do In An Emergency", items: [
+      "Stay calm. Move yourself and others away from immediate danger.",
+      "Phone Campus Security on 015 962 8000 or the relevant emergency number.",
+      "Give your name, your exact location and a clear description of what happened.",
+      "Do not hang up until the operator tells you to.",
+      "Log the incident in UNIVEN SAFE afterwards so it can be tracked and followed up."
+    ]}
+  ];
+}
+
+/* ---------------------------------------------------------------------------
+   4. LOCAL CACHE
+   --------------------------------------------------------------------------- */
+const db = {
+  users: {}, reports: {}, safety: null,
+  settings: { adminInitialised: true, universityName: "University of Venda" }
+};
+
+let firebaseReady  = false;
+let currentUserObj = null;
+let reportsUnsub   = null;
+let usersUnsub     = null;
+let safetyUnsub    = null;
+
+function normalizeDoc(data) {
+  const out = Object.assign({}, data);
+  if (out.createdAt && typeof out.createdAt.toDate === "function")
+    out.createdAt = out.createdAt.toDate().toISOString();
+  if (out.updatedAt && typeof out.updatedAt.toDate === "function")
+    out.updatedAt = out.updatedAt.toDate().toISOString();
+  if (Array.isArray(out.updates)) {
+    out.updates = out.updates.map(u => Object.assign({}, u, {
+      at: u.at && typeof u.at.toDate === "function" ? u.at.toDate().toISOString() : u.at
+    }));
+  }
+  return out;
+}
+
+function reportsForStudent(uid) {
+  return Object.values(db.reports).filter(r => r.studentId === uid)
+    .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+}
+function allReports() {
+  return Object.values(db.reports).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+}
+function countByStatus(reports, status) {
+  return reports.filter(r => r.status === status).length;
+}
+
+/* ---------------------------------------------------------------------------
+   5. REAL-TIME LISTENERS
+   --------------------------------------------------------------------------- */
+function attachListeners() {
+  detachListeners();
+  if (!currentUserObj) return;
+
+  const reportsQuery = currentUserObj.role === "admin"
+    ? query(collection(firestore, "reports"), orderBy("createdAt", "desc"))
+    : query(collection(firestore, "reports"), where("studentId", "==", currentUserObj.uid));
+
+  reportsUnsub = onSnapshot(reportsQuery,
+    snapshot => {
+      db.reports = {};
+      snapshot.forEach(d => { db.reports[d.id] = Object.assign({ id: d.id }, normalizeDoc(d.data())); });
+      handleDataChange();
+    },
+    error => dbgErr("reports listener", error)
+  );
+
+  if (currentUserObj.role === "admin") {
+    usersUnsub = onSnapshot(query(collection(firestore, "users")),
+      snapshot => {
+        db.users = {};
+        snapshot.forEach(d => { db.users[d.id] = Object.assign({ uid: d.id }, normalizeDoc(d.data())); });
+        handleDataChange();
+      },
+      error => dbgErr("users listener", error)
+    );
+  }
+
+  safetyUnsub = onSnapshot(doc(firestore, "safety", "info"),
+    snapshot => {
+      db.safety = snapshot.exists() && Array.isArray(snapshot.data().categories)
+        ? snapshot.data().categories : null;
+      handleDataChange();
+    },
+    error => dbgErr("safety listener", error)
+  );
+}
+
+function detachListeners() {
+  if (reportsUnsub) { try { reportsUnsub(); } catch (_) {} reportsUnsub = null; }
+  if (usersUnsub)   { try { usersUnsub(); }   catch (_) {} usersUnsub = null; }
+  if (safetyUnsub)  { try { safetyUnsub(); }  catch (_) {} safetyUnsub = null; }
+  db.reports = {}; db.users = {}; db.safety = null;
+}
+
+function handleDataChange() {
+  const parts = parseRoute();
+  const isFormPage =
+    (parts[0] === "student" && parts[1] === "report")   ||
+    (parts[0] === "student" && parts[1] === "profile")  ||
+    (parts[0] === "admin"   && parts[1] === "profile")  ||
+    (parts[0] === "admin"   && parts[1] === "safety");
+  if (!isFormPage) render();
+}
+
+/* ---------------------------------------------------------------------------
+   6. AUTHENTICATION
+   --------------------------------------------------------------------------- */
+function currentUser() { return currentUserObj; }
+function isEmailValid(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(email).trim());
+}
+
+async function registerStudent({ fullName, studentNumber, email, password }) {
+  const normalisedEmail = normaliseEmail(email);
+  dbg("registerStudent: creating Auth user for", normalisedEmail);
+
+  const credential = await createUserWithEmailAndPassword(auth, normalisedEmail, password);
+  dbg("registerStudent: Auth uid =", credential.user.uid);
+
+  const profile = {
+    fullName: String(fullName).trim(),
+    studentNumber: String(studentNumber).trim().toUpperCase(),
+    email: normalisedEmail,
+    role: "student",
+    createdAt: serverTimestamp()
+  };
+
+  try {
+    await setDoc(doc(firestore, "users", credential.user.uid), profile);
+    dbg("registerStudent: Firestore profile written");
+  } catch (error) {
+    dbgErr("registerStudent: Firestore write FAILED — rolling back Auth user", error);
+    try { await signOut(auth); } catch (_) {}
+    throw error;
+  }
+
+  currentUserObj = Object.assign({ uid: credential.user.uid }, profile,
+    { createdAt: new Date().toISOString() });
+  return currentUserObj;
+}
+
+async function signIn(email, password) {
+  const normalisedEmail = normaliseEmail(email);
+  dbg("signIn: attempting Auth sign-in for", normalisedEmail);
+
+  let credential;
+  try {
+    credential = await signInWithEmailAndPassword(auth, normalisedEmail, password);
+  } catch (error) {
+    dbgErr("signIn: signInWithEmailAndPassword FAILED", { code: error.code, message: error.message });
+    throw error;
+  }
+
+  const uid = credential.user.uid;
+  dbg("signIn: Auth success, uid =", uid);
+
+  let profile = null;
+  let lastError = null;
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const snap = await getDoc(doc(firestore, "users", uid));
+      if (snap.exists()) {
+        profile = normalizeDoc(snap.data());
+        dbg("signIn: profile loaded on attempt", attempt + 1);
+        break;
+      } else {
+        dbgErr("signIn: users/" + uid + " does NOT exist");
+        lastError = Object.assign(new Error("Profile document missing"), { code: "app/profile-missing" });
+      }
+    } catch (error) {
+      dbgErr("signIn: getDoc failed attempt " + (attempt + 1), { code: error.code, message: error.message });
+      lastError = Object.assign(new Error(error.message || "Firestore read failed"), {
+        code: "app/profile-load-failed",
+        original: error
+      });
+    }
+    if (attempt < 2) await new Promise(r => setTimeout(r, 350));
+  }
+
+  if (!profile) {
+    dbgErr("signIn: could not load profile after 3 attempts", lastError);
+    throw lastError || Object.assign(new Error("Profile load failed"), { code: "app/profile-load-failed" });
+  }
+
+  profile.fullName      = profile.fullName      || "Student";
+  profile.studentNumber = profile.studentNumber || "—";
+  profile.email         = profile.email         || normalisedEmail;
+  profile.role          = profile.role          || "student";
+
+  currentUserObj = Object.assign({ uid }, profile);
+  return currentUserObj;
+}
+
+async function doLogout() {
+  await signOut(auth);
+  currentUserObj = null;
+}
+
+function authErrorMessage(error) {
+  const code = error && error.code ? String(error.code) : "unknown";
+  dbgErr("authErrorMessage:", { code, message: error && error.message });
+
+  switch (code) {
+    case "auth/email-already-in-use":
+      return "An account with this email address already exists.";
+    case "auth/user-not-found":
+      return "We couldn't find an account with that email address.";
+    case "auth/wrong-password":
+    case "auth/invalid-credential":
+      return "Incorrect email or password. Please try again.";
+    case "auth/invalid-email":
+      return "Please enter a valid email address.";
+    case "auth/weak-password":
+      return "That password is too weak. Use at least 8 characters.";
+    case "auth/user-disabled":
+      return "This account has been disabled. Please contact the Safety Office.";
+    case "auth/too-many-requests":
+      return "Too many attempts. Please wait a moment and try again.";
+    case "auth/network-request-failed":
+      return "Network problem. Please check your connection and try again.";
+    case "auth/operation-not-allowed":
+      return "Email/password sign-in is not enabled. Please contact the Safety Office.";
+    case "auth/popup-closed-by-user":
+      return "Sign-in was cancelled. Please try again.";
+    case "auth/requires-recent-login":
+      return "Please sign in again to continue.";
+    case "permission-denied":
+    case "firestore/permission-denied":
+      return "We couldn't access your account data. Please contact the Safety Office.";
+    case "app/profile-missing":
+      return "Your account exists but its profile is missing. Please contact the Safety Office.";
+    case "app/profile-load-failed":
+      return "We couldn't load your profile. Please check your connection and try again.";
+    default:
+      return "Something went wrong (" + code + "). Please try again.";
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   7. AUTHORIZATION GUARD
+   --------------------------------------------------------------------------- */
+function requireRole(role) {
+  const user = currentUser();
+  if (!user || user.role !== role) {
+    if (user) toast("You do not have permission to access that area.", "error");
+    else toast("Please sign in to continue.");
+    go(role === "admin" ? "#/admin/login" : "#/student/login");
+    return null;
+  }
+  return user;
+}
+
+/* ---------------------------------------------------------------------------
+   8. HELPERS
+   --------------------------------------------------------------------------- */
+function generateReportId() {
+  const t = String(Date.now()).slice(-4);
+  const r = String(Math.floor(Math.random() * 100)).padStart(2, "0");
+  return "UNV-" + t + r;
+}
+function statusBadge(status) {
+  const meta = STATUS_META[status] || STATUS_META["Pending"];
+  return `<span class="badge ${meta.cls}">${I[meta.icon]}${esc(meta.label)}</span>`;
+}
+
+/* ---------------------------------------------------------------------------
+   9. ROUTER
+   --------------------------------------------------------------------------- */
+function go(hash) {
+  if (location.hash === hash) render();
+  else location.hash = hash;
+}
+function parseRoute() {
+  return location.hash.replace(/^#/, "").split("/").filter(Boolean);
+}
+function mount(html, afterMount) {
+  const active = document.activeElement;
+  const focusId = active && active.id ? active.id : null;
+  const caret = focusId && typeof active.selectionStart === "number" ? active.selectionStart : null;
+  const app = $("#app");
+  app.innerHTML = html;
+  if (afterMount) afterMount(app);
+  window.scrollTo(0, 0);
+  if (focusId) {
+    const el = document.getElementById(focusId);
+    if (el) {
+      el.focus();
+      if (caret != null) { try { el.setSelectionRange(caret, caret); } catch (_) {} }
+    }
+  }
+}
+
+function render() {
+  if (!firebaseReady) {
+    mount(`<div class="boot-screen"><span class="spinner"></span><span>Loading UNIVEN SAFE…</span></div>`);
+    return;
+  }
+  const parts = parseRoute();
+  const root = parts[0], sub = parts[1], id = parts[2];
+
+  try {
+    if (!root) return viewLanding();
+
+    if (root === "student") {
+      if (sub === "login")    return viewStudentLogin();
+      if (sub === "register") return viewStudentRegister();
+      if (sub === "forgot")   return viewForgotPassword();
+      const user = requireRole("student");
+      if (!user) return;
+      if (!sub)                return viewStudentDashboard(user);
+      if (sub === "report")    return viewReportForm(user);
+      if (sub === "reports")   return id ? viewStudentReportDetail(user, id) : viewStudentReports(user);
+      if (sub === "emergency") return viewEmergency("student");
+      if (sub === "safety")    return viewSafetyInfo("student");
+      if (sub === "profile")   return viewProfile("student", user);
+      return viewNotFound();
+    }
+
+    if (root === "admin") {
+      if (sub === "login") return viewAdminLogin();
+      if (sub === "setup") return viewAdminSetupInfo();
+      const user = requireRole("admin");
+      if (!user) return;
+      if (!sub)                return viewAdminDashboard(user);
+      if (sub === "reports")   return id ? viewAdminReportDetail(user, id) : viewAdminReports(user);
+      if (sub === "students")  return viewAdminStudents(user);
+      if (sub === "safety")    return viewAdminSafety(user);
+      if (sub === "profile")   return viewProfile("admin", user);
+      if (sub === "settings")  return viewAdminSettings(user);
+      return viewNotFound();
+    }
+    return viewNotFound();
+  } catch (error) {
+    dbgErr("render", error);
+    mount(shellError());
+  }
+}
+
+window.addEventListener("hashchange", render);
+
+/* ---------------------------------------------------------------------------
+   10. SHARED UI
+   --------------------------------------------------------------------------- */
+function brandMark() {
+  return `<a href="#/" class="brand">${I.shield}<span>UNIVEN <strong>SAFE</strong></span></a>`;
+}
+function fieldError(id, message) {
+  if (!message) return "";
+  return `<p class="error-text" id="${id}" role="alert">${I.info}${esc(message)}</p>`;
+}
+function studentNav(active, variant) {
+  const items = [
+    { key: "home",    href: "#/student",           label: "Home",       icon: I.home },
+    { key: "report",  href: "#/student/report",    label: "Report",     icon: I.alert },
+    { key: "reports", href: "#/student/reports",   label: "My Reports", icon: I.list },
+    { key: "safety",  href: "#/student/safety",    label: "Safety",     icon: I.shieldSm },
+    { key: "profile", href: "#/student/profile",   label: "Profile",    icon: I.user }
+  ];
+  if (variant === "top") {
+    return items.map(i => `<a href="${i.href}" class="${active === i.key ? "active" : ""}">${esc(i.label)}</a>`).join("");
+  }
+  return items.map(i => `
+    <a href="${i.href}" class="${active === i.key ? "active" : ""}" ${active === i.key ? 'aria-current="page"' : ""}>
+      ${i.icon}<span>${esc(i.label)}</span>
+    </a>`).join("");
+}
+function studentShell(active, content) {
+  return `
+    <header class="topbar has-topnav">
+      <div class="topbar-inner">
+        ${brandMark()}
+        <nav class="topnav" aria-label="Student navigation">${studentNav(active, "top")}</nav>
+        <div class="topbar-actions">
+          <button class="icon-btn" type="button" data-action="logout" aria-label="Log out" title="Log out">${I.logout}</button>
+        </div>
+      </div>
+    </header>
+    <main id="main-content" class="page has-bottomnav"><div class="container">${content}</div></main>
+    <nav class="bottomnav" aria-label="Student navigation">${studentNav(active, "bottom")}</nav>
+  `;
+}
+const ADMIN_NAV = [
+  { key: "dashboard", href: "#/admin",          label: "Dashboard",          icon: I.grid },
+  { key: "reports",   href: "#/admin/reports",  label: "Reports",            icon: I.list },
+  { key: "students",  href: "#/admin/students", label: "Students",           icon: I.students },
+  { key: "safety",    href: "#/admin/safety",   label: "Safety Information", icon: I.shieldSm },
+  { key: "profile",   href: "#/admin/profile",  label: "Profile",            icon: I.user },
+  { key: "settings",  href: "#/admin/settings", label: "Settings",           icon: I.settings }
+];
+function adminShell(active, content, user) {
+  const sideLinks = ADMIN_NAV.map(i =>
+    `<a href="${i.href}" class="${active === i.key ? "active" : ""}" ${active === i.key ? 'aria-current="page"' : ""}>${i.icon}<span>${esc(i.label)}</span></a>`
+  ).join("");
+  const drawerLinks = sideLinks + `<a href="#" data-action="logout">${I.logout}<span>Logout</span></a>`;
+  return `
+    <header class="topbar">
+      <div class="topbar-inner">
+        <button class="icon-btn menu-btn" type="button" data-action="open-drawer" aria-label="Open menu" aria-controls="adminDrawer" aria-expanded="false">${I.menu}</button>
+        ${brandMark()}
+        <div class="topbar-actions">
+          <span class="text-sm" style="color:#9CC4EA;display:none" id="adminNameTop">${esc(user ? user.fullName : "Administrator")}</span>
+          <button class="icon-btn" type="button" data-action="logout" aria-label="Log out" title="Log out">${I.logout}</button>
+        </div>
+      </div>
+    </header>
+    <div class="admin-layout">
+      <aside class="admin-side" aria-label="Admin navigation">
+        <p class="side-label">Administration</p>${sideLinks}
+        <p class="side-label">Session</p>
+        <a href="#" data-action="logout">${I.logout}<span>Logout</span></a>
+      </aside>
+      <main id="main-content" class="page"><div style="padding:0 16px">${content}</div></main>
+    </div>
+    <div class="drawer-overlay" id="drawerOverlay" data-action="close-drawer"></div>
+    <aside class="drawer" id="adminDrawer" aria-label="Admin navigation" aria-hidden="true">
+      <div class="drawer-head">
+        <span style="font-weight:800;letter-spacing:.05em">UNIVEN SAFE</span>
+        <button class="icon-btn" type="button" data-action="close-drawer" aria-label="Close menu">${I.close}</button>
+      </div>
+      <div class="drawer-body">${drawerLinks}</div>
+    </aside>
+  `;
+}
+function pageHeader(title, subtitle, backHref) {
+  return `
+    <div style="margin-bottom:20px">
+      ${backHref ? `<a href="${backHref}" class="btn btn-sm btn-outline" style="margin-bottom:12px">${I.back} Back</a>` : ""}
+      <h1>${esc(title)}</h1>
+      ${subtitle ? `<p class="text-muted" style="margin:0">${esc(subtitle)}</p>` : ""}
+    </div>`;
+}
+function emptyState(title, message, actionHtml) {
+  return `
+    <div class="empty">
+      <div class="empty-icon">${I.list}</div>
+      <h3>${esc(title)}</h3>
+      <p>${esc(message)}</p>
+      ${actionHtml || ""}
+    </div>`;
+}
+function shellError() {
+  return `
+    <main id="main-content" class="page"><div class="container narrow">
+      <div class="card">
+        <h1>Something went wrong</h1>
+        <p class="text-muted">We couldn't load this page. Please try again.</p>
+        <a class="btn btn-primary" href="#/">Return to home</a>
+      </div>
+    </div></main>`;
+}
+
+document.addEventListener("click", async event => {
+  const trigger = event.target.closest("[data-action]");
+  if (!trigger) return;
+  const action = trigger.dataset.action;
+  if (action === "logout") {
+    event.preventDefault();
+    try {
+      await doLogout();
+      toast("You have been signed out.");
+      go("#/");
+    } catch (error) {
+      dbgErr("logout", error);
+      toast("We couldn't sign you out. Please try again.", "error");
+    }
+  }
+  if (action === "open-drawer") {
+    event.preventDefault();
+    const drawer = $("#adminDrawer"), overlay = $("#drawerOverlay");
+    if (drawer) { drawer.classList.add("open"); drawer.setAttribute("aria-hidden", "false"); }
+    if (overlay) overlay.classList.add("open");
+    trigger.setAttribute("aria-expanded", "true");
+  }
+  if (action === "close-drawer") {
+    const drawer = $("#adminDrawer"), overlay = $("#drawerOverlay");
+    if (drawer) { drawer.classList.remove("open"); drawer.setAttribute("aria-hidden", "true"); }
+    if (overlay) overlay.classList.remove("open");
+    const btn = $('[data-action="open-drawer"]');
+    if (btn) btn.setAttribute("aria-expanded", "false");
+  }
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    const drawer = $("#adminDrawer");
+    if (drawer && drawer.classList.contains("open")) {
+      drawer.classList.remove("open");
+      drawer.setAttribute("aria-hidden", "true");
+      const overlay = $("#drawerOverlay");
+      if (overlay) overlay.classList.remove("open");
+    }
+  }
+});
+
+/* ---------------------------------------------------------------------------
+   11. LANDING
+   --------------------------------------------------------------------------- */
+function viewLanding() {
+  mount(`
+    <header class="topbar">
+      <div class="topbar-inner">
+        ${brandMark()}
+        <div class="topbar-actions">
+          <a class="btn btn-sm btn-ghost" href="#/student/login">Student Login</a>
+          <a class="btn btn-sm btn-accent" href="#/admin/login">Admin Portal</a>
+        </div>
+      </div>
+    </header>
+    <main id="main-content">
+      <section class="hero">
+        <div class="hero-inner">
+          <span class="hero-eyebrow">University Safety Platform</span>
+          <h1>UNIVEN SAFE</h1>
+          <p class="hero-tag">Your Safety. Your Voice. Our Responsibility.</p>
+          <p class="hero-text">UNIVEN SAFE provides students with a simple and secure way to report safety incidents and stay informed about the progress of their reports.</p>
+          <div class="hero-actions">
+            <a class="btn btn-accent btn-lg" href="#/student/login">${I.user} Student Portal</a>
+            <a class="btn btn-outline-light btn-lg" href="#/admin/login">${I.shieldSm} Admin Portal</a>
+          </div>
+        </div>
+      </section>
+      <section class="landing-section" id="about">
+        <div class="container">
+          <h2>About UNIVEN SAFE</h2>
+          <p class="text-muted" style="max-width:720px">UNIVEN SAFE is the university's official incident reporting and safety awareness platform. It connects students directly with authorised campus safety personnel, so that every report is logged, tracked and followed up — and so that students always know what is happening with the incidents they report.</p>
+          <div class="feature-grid" style="margin-top:22px">
+            <div class="feature"><div class="f-icon">${I.alert}</div><h3>Report in under a minute</h3><p>A short, clear form. No complicated menus, no unnecessary steps.</p></div>
+            <div class="feature"><div class="f-icon">${I.list}</div><h3>Track your report</h3><p>See the live status of every report you submit, from Pending to Resolved.</p></div>
+            <div class="feature"><div class="f-icon">${I.shieldSm}</div><h3>Handled by professionals</h3><p>Only authorised university safety administrators can access and act on reports.</p></div>
+          </div>
+        </div>
+      </section>
+      <section class="landing-section" id="how">
+        <div class="container">
+          <h2>How it works</h2>
+          <div class="steps" style="margin-top:18px">
+            <div class="step"><h3>Create an account</h3><p>Register with your name, student number and university email.</p></div>
+            <div class="step"><h3>Submit a report</h3><p>Describe what happened, where and when. Add evidence if you have it.</p></div>
+            <div class="step"><h3>Safety team responds</h3><p>An administrator reviews your report and updates its status.</p></div>
+            <div class="step"><h3>Stay informed</h3><p>Follow progress and read administrator updates on your report.</p></div>
+          </div>
+        </div>
+      </section>
+      <section class="landing-section" id="emergency">
+        <div class="container">
+          <h2>Emergency information</h2>
+          <div class="alert alert-warn" style="margin-bottom:16px">
+            ${I.alert}
+            <div><strong>In a life-threatening emergency, phone Campus Security immediately.</strong> Then log the incident in UNIVEN SAFE so it can be tracked.</div>
+          </div>
+          <div class="feature-grid">
+            ${EMERGENCY_CONTACTS.slice(0, 3).map(c => `
+              <div class="feature">
+                <div class="f-icon">${I.phone}</div>
+                <h3>${esc(c.name)}</h3>
+                <p style="margin-bottom:10px">${esc(c.note)}</p>
+                <a class="btn btn-sm btn-primary" href="tel:${esc(c.number.replace(/\s/g, ""))}">${esc(c.number)}</a>
+              </div>`).join("")}
+          </div>
+        </div>
+      </section>
+      <section class="landing-section" id="safety">
+        <div class="container">
+          <h2>Safety information</h2>
+          <p class="text-muted">Practical guidance to help you stay safe on and around campus.</p>
+          <div class="feature-grid" style="margin-top:18px">
+            ${(db.safety || defaultSafety()).map(cat => `
+              <div class="feature"><div class="f-icon">${I.shieldSm}</div><h3>${esc(cat.title)}</h3><p>${esc(cat.items[0] || "")}</p></div>`).join("")}
+          </div>
+        </div>
+      </section>
+      <section class="landing-section" id="contact">
+        <div class="container">
+          <h2>Contact &amp; help</h2>
+          <div class="feature-grid">
+            <div class="feature"><div class="f-icon">${I.phone}</div><h3>Campus Security</h3><p style="margin-bottom:10px">Available 24 hours a day, every day.</p><a class="btn btn-sm btn-outline" href="tel:0159628000">015 962 8000</a></div>
+            <div class="feature"><div class="f-icon">${I.mail}</div><h3>Safety Office</h3><p style="margin-bottom:10px">For non-urgent safety queries and follow-ups.</p><a class="btn btn-sm btn-outline" href="mailto:safety@univen.ac.za">safety@univen.ac.za</a></div>
+            <div class="feature"><div class="f-icon">${I.info}</div><h3>Need help using UNIVEN SAFE?</h3><p>Speak to the Safety Office or ask at your residence front desk.</p></div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="container row-between">
+        <div><strong>UNIVEN SAFE</strong><br>Your Safety. Your Voice. Our Responsibility.</div>
+        <div style="text-align:right">
+          <a href="#/student/login" style="color:#9CC4EA">Student Portal</a> &nbsp;·&nbsp;
+          <a href="#/admin/login" style="color:#9CC4EA">Admin Portal</a>
+        </div>
+      </div>
+    </footer>
+  `);
+}
+
+/* ---------------------------------------------------------------------------
+   12. AUTH VIEWS
+   --------------------------------------------------------------------------- */
+function authShell(inner) {
+  return `
+    <div class="auth-wrap">
+      <header class="topbar">
+        <div class="topbar-inner">
+          ${brandMark()}
+          <div class="topbar-actions"><a class="btn btn-sm btn-ghost" href="#/">Home</a></div>
+        </div>
+      </header>
+      <main id="main-content" class="auth-main"><div class="auth-card">${inner}</div></main>
+    </div>`;
+}
+
+function viewStudentLogin() {
+  mount(authShell(`
+    <div class="auth-head">
+      <div class="auth-icon">${I.user}</div>
+      <h1>Student Login</h1>
+      <p>Sign in to report an incident or track your reports.</p>
+    </div>
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label class="label" for="loginEmail">University Email <span class="req">*</span></label>
+        <input class="input" type="email" id="loginEmail" name="email" autocomplete="email"
+               inputmode="email" placeholder="you@univen.ac.za" required>
+      </div>
+      <div class="field">
+        <label class="label" for="loginPassword">Password <span class="req">*</span></label>
+        <input class="input" type="password" id="loginPassword" name="password"
+               autocomplete="current-password" placeholder="Enter your password" required>
+      </div>
+      <div id="loginError" class="sr-only" aria-live="polite"></div>
+      <button class="btn btn-primary btn-block btn-lg" type="submit" id="loginSubmit">Sign In</button>
+      <div class="row-between" style="margin-top:14px">
+        <a href="#/student/forgot" class="text-sm">Forgot Password?</a>
+        <a href="#/student/register" class="text-sm">Create an account</a>
+      </div>
+    </form>
+    <hr class="divider">
+    <p class="text-sm text-muted" style="text-align:center;margin:0">
+      Administrators should use the <a href="#/admin/login">Admin Portal</a>.
+    </p>
+  `), () => {
+    $("#loginForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const email    = $("#loginEmail").value;
+      const password = $("#loginPassword").value;
+      const errorBox = $("#loginError");
+      const button   = $("#loginSubmit");
+
+      dbg("login submit: email =", normaliseEmail(email), "password length =", password.length);
+      errorBox.className = "sr-only";
+      errorBox.textContent = "";
+
+      if (!email) return showLoginError("Please enter your university email address.");
+      if (!isEmailValid(email)) return showLoginError("Please enter a valid email address.");
+      if (!password) return showLoginError("Please enter your password.");
+
+      setLoading(button, true, "Signing in…");
+      try {
+        const user = await signIn(email, password);
+        if (user.role !== "student") {
+          await doLogout();
+          return showLoginError("This account is not a student account. Please use the Admin Portal.");
+        }
+        toast(`Welcome back, ${user.fullName.split(" ")[0]}.`, "success");
+        go("#/student");
+      } catch (error) {
+        dbgErr("student login FAILED:", { code: error && error.code, message: error && error.message });
+        if (error && (error.code === "app/profile-missing" || error.code === "app/profile-load-failed")) {
+          try { await doLogout(); } catch (_) {}
+        }
+        showLoginError(authErrorMessage(error));
+      } finally {
+        setLoading(button, false);
+      }
+    });
+
+    function showLoginError(message) {
+      const box = $("#loginError");
+      box.className = "alert alert-error";
+      box.style.marginBottom = "16px";
+      box.innerHTML = `${I.info}<span>${esc(message)}</span>`;
+      toast(message, "error");
+    }
+  });
+}
+
+function viewStudentRegister() {
+  mount(authShell(`
+    <div class="auth-head">
+      <div class="auth-icon">${I.shieldSm}</div>
+      <h1>Create your account</h1>
+      <p>Register to report incidents and track their progress.</p>
+    </div>
+    <form id="registerForm" novalidate>
+      <div class="field">
+        <label class="label" for="regName">Full Name <span class="req">*</span></label>
+        <input class="input" type="text" id="regName" autocomplete="name" placeholder="e.g. Thandiwe Mokoena" required>
+        <div id="err-regName"></div>
+      </div>
+      <div class="field">
+        <label class="label" for="regStudentNumber">Student Number <span class="req">*</span></label>
+        <input class="input" type="text" id="regStudentNumber" inputmode="numeric" placeholder="e.g. 21001234" required>
+        <div id="err-regStudentNumber"></div>
+      </div>
+      <div class="field">
+        <label class="label" for="regEmail">University Email <span class="req">*</span></label>
+        <input class="input" type="email" id="regEmail" autocomplete="email" inputmode="email" placeholder="you@univen.ac.za" required>
+        <div id="err-regEmail"></div>
+      </div>
+      <div class="form-grid two">
+        <div class="field">
+          <label class="label" for="regPassword">Password <span class="req">*</span></label>
+          <input class="input" type="password" id="regPassword" autocomplete="new-password" required>
+          <p class="hint">At least 8 characters, including a letter and a number.</p>
+          <div id="err-regPassword"></div>
+        </div>
+        <div class="field">
+          <label class="label" for="regConfirm">Confirm Password <span class="req">*</span></label>
+          <input class="input" type="password" id="regConfirm" autocomplete="new-password" required>
+          <div id="err-regConfirm"></div>
+        </div>
+      </div>
+      <div id="registerAlert" class="sr-only" aria-live="polite"></div>
+      <button class="btn btn-primary btn-block btn-lg" type="submit" id="registerSubmit">Create Account</button>
+      <p class="text-sm text-muted" style="text-align:center;margin:14px 0 0">
+        Already registered? <a href="#/student/login">Sign in</a>
+      </p>
+    </form>
+  `), () => {
+    $("#registerForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const values = {
+        fullName: $("#regName").value.trim(),
+        studentNumber: $("#regStudentNumber").value.trim(),
+        email: $("#regEmail").value,
+        password: $("#regPassword").value,
+        confirm: $("#regConfirm").value
+      };
+      const errors = {};
+      if (!values.fullName || values.fullName.length < 3) errors.regName = "Please enter your full name.";
+      if (!values.studentNumber) errors.regStudentNumber = "Please enter your student number.";
+      else if (!/^[A-Za-z0-9]{5,15}$/.test(values.studentNumber))
+        errors.regStudentNumber = "Student numbers contain 5–15 letters or numbers.";
+      if (!values.email) errors.regEmail = "Please enter your university email address.";
+      else if (!isEmailValid(values.email)) errors.regEmail = "Please enter a valid email address.";
+      if (!values.password) errors.regPassword = "Please create a password.";
+      else if (values.password.length < 8) errors.regPassword = "Password must be at least 8 characters.";
+      else if (!/[A-Za-z]/.test(values.password) || !/\d/.test(values.password))
+        errors.regPassword = "Password must include at least one letter and one number.";
+      if (!values.confirm) errors.regConfirm = "Please confirm your password.";
+      else if (values.password !== values.confirm) errors.regConfirm = "Passwords do not match.";
+
+      clearFieldErrors();
+      if (Object.keys(errors).length) {
+        showFieldErrors(errors);
+        const first = $("#" + Object.keys(errors)[0]);
+        if (first) first.focus();
+        return;
+      }
+
+      const button = $("#registerSubmit");
+      setLoading(button, true, "Creating account…");
+      const alertBox = $("#registerAlert");
+      alertBox.className = "alert alert-info";
+      alertBox.style.marginBottom = "16px";
+      alertBox.innerHTML = `<span class="spinner dark"></span><span>Creating your account…</span>`;
+
+      try {
+        await registerStudent(values);
+        alertBox.className = "alert alert-success";
+        alertBox.style.marginBottom = "16px";
+        alertBox.innerHTML = `${I.check}<span><strong>Account created successfully.</strong> Welcome to UNIVEN SAFE.</span>`;
+        toast("Account created successfully. Welcome to UNIVEN SAFE.", "success");
+        setTimeout(() => go("#/student"), 900);
+      } catch (error) {
+        dbgErr("register FAILED:", { code: error && error.code, message: error && error.message });
+        alertBox.className = "alert alert-error";
+        alertBox.style.marginBottom = "16px";
+        alertBox.innerHTML = `${I.info}<span>${esc(authErrorMessage(error))}</span>`;
+        toast(authErrorMessage(error), "error");
+        setLoading(button, false);
+      }
+    });
+
+    function clearFieldErrors() {
+      ["regName", "regStudentNumber", "regEmail", "regPassword", "regConfirm"].forEach(key => {
+        $("#err-" + key).innerHTML = "";
+        const input = $("#" + key);
+        if (input) input.removeAttribute("aria-invalid");
+      });
+    }
+    function showFieldErrors(errors) {
+      Object.entries(errors).forEach(([key, message]) => {
+        const holder = $("#err-" + key);
+        if (holder) holder.innerHTML = fieldError("err-" + key, message);
+        const input = $("#" + key);
+        if (input) input.setAttribute("aria-invalid", "true");
+      });
+      toast("Please correct the highlighted fields.", "error");
+    }
+  });
+}
+
+function viewForgotPassword() {
+  mount(authShell(`
+    <div class="auth-head">
+      <div class="auth-icon">${I.key}</div>
+      <h1>Reset your password</h1>
+      <p>Enter your university email and we'll send you reset instructions.</p>
+    </div>
+    <form id="forgotForm" novalidate>
+      <div class="field">
+        <label class="label" for="forgotEmail">University Email <span class="req">*</span></label>
+        <input class="input" type="email" id="forgotEmail" inputmode="email" placeholder="you@univen.ac.za" required>
+      </div>
+      <div id="forgotAlert" class="sr-only" aria-live="polite"></div>
+      <button class="btn btn-primary btn-block btn-lg" type="submit" id="forgotSubmit">Send Reset Link</button>
+      <p class="text-sm text-muted" style="text-align:center;margin:14px 0 0">
+        <a href="#/student/login">Back to sign in</a>
+      </p>
+    </form>
+  `), () => {
+    $("#forgotForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const email = $("#forgotEmail").value;
+      const alertBox = $("#forgotAlert");
+      if (!email || !isEmailValid(email)) {
+        alertBox.className = "alert alert-error";
+        alertBox.style.marginBottom = "16px";
+        alertBox.innerHTML = `${I.info}<span>Please enter a valid email address.</span>`;
+        return;
+      }
+      const button = $("#forgotSubmit");
+      setLoading(button, true, "Sending…");
+      try {
+        await sendPasswordResetEmail(auth, normaliseEmail(email));
+      } catch (error) {
+        dbgErr("password reset", error);
+      } finally {
+        alertBox.className = "alert alert-success";
+        alertBox.style.marginBottom = "16px";
+        alertBox.innerHTML = `${I.check}<span>If an account exists for <strong>${esc(email)}</strong>, password reset instructions have been sent.</span>`;
+        setLoading(button, false);
+      }
+    });
+  });
+}
+
+function viewAdminLogin() {
+  mount(authShell(`
+    <div class="auth-head">
+      <div class="auth-icon">${I.shieldSm}</div>
+      <h1>Administrator Login</h1>
+      <p>Authorised university safety personnel only.</p>
+    </div>
+    <div class="alert alert-info" style="margin-bottom:18px">
+      ${I.info}
+      <div>Administrator accounts are provisioned by the university Safety Office through Firebase Authentication. <a href="#/admin/setup"><strong>Setup instructions</strong></a>.</div>
+    </div>
+    <form id="adminLoginForm" novalidate>
+      <div class="field">
+        <label class="label" for="adminEmail">Administrator Email <span class="req">*</span></label>
+        <input class="input" type="email" id="adminEmail" inputmode="email" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label class="label" for="adminPassword">Password <span class="req">*</span></label>
+        <input class="input" type="password" id="adminPassword" autocomplete="current-password" required>
+      </div>
+      <div id="adminLoginAlert" class="sr-only" aria-live="polite"></div>
+      <button class="btn btn-primary btn-block btn-lg" type="submit" id="adminLoginSubmit">Sign In</button>
+      <p class="text-sm text-muted" style="text-align:center;margin:14px 0 0">
+        <a href="#/">Back to home</a>
+      </p>
+    </form>
+  `), () => {
+    $("#adminLoginForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const email = $("#adminEmail").value;
+      const password = $("#adminPassword").value;
+      const alertBox = $("#adminLoginAlert");
+      const button = $("#adminLoginSubmit");
+      alertBox.className = "sr-only";
+      alertBox.textContent = "";
+      if (!email || !isEmailValid(email)) return fail("Please enter a valid email address.");
+      if (!password) return fail("Please enter your password.");
+
+      setLoading(button, true, "Signing in…");
+      try {
+        const user = await signIn(email, password);
+        if (user.role !== "admin") {
+          await doLogout();
+          return fail("This account does not have administrator access.");
+        }
+        toast(`Signed in as ${user.fullName}.`, "success");
+        go("#/admin");
+      } catch (error) {
+        dbgErr("admin login FAILED:", { code: error && error.code, message: error && error.message });
+        if (error && (error.code === "app/profile-missing" || error.code === "app/profile-load-failed")) {
+          try { await doLogout(); } catch (_) {}
+        }
+        fail(authErrorMessage(error));
+      } finally {
+        setLoading(button, false);
+      }
+
+      function fail(message) {
+        alertBox.className = "alert alert-error";
+        alertBox.style.marginBottom = "16px";
+        alertBox.innerHTML = `${I.info}<span>${esc(message)}</span>`;
+        toast(message, "error");
+        setLoading(button, false);
+      }
+    });
+  });
+}
+
+function viewAdminSetupInfo() {
+  mount(authShell(`
+    <div class="auth-head">
+      <div class="auth-icon">${I.shieldSm}</div>
+      <h1>Administrator Setup</h1>
+      <p>How administrator accounts are created.</p>
+    </div>
+    <div class="alert alert-info" style="margin-bottom:18px">
+      ${I.info}
+      <div>For security reasons administrator accounts are <strong>not created from this public page</strong>. They are provisioned by your system administrator using the Firebase Console.</div>
+    </div>
+    <ol style="padding-left:20px;line-height:1.8;color:var(--navy-700);font-size:.9rem">
+      <li>Open the Firebase Console → <strong>Authentication</strong> → <strong>Users</strong>.</li>
+      <li>Click <strong>Add user</strong>, enter the administrator email and password.</li>
+      <li>Copy the new user's <strong>UID</strong>.</li>
+      <li>Open <strong>Firestore Database</strong> → create a document at <code>users/&lt;UID&gt;</code> with these fields:
+        <pre class="mono" style="background:var(--grey-50);padding:10px;border-radius:8px;font-size:.8rem;overflow-x:auto;margin:8px 0">{
+  fullName:      "Administrator Name",
+  studentNumber: "—",
+  email:         "admin@univen.ac.za",
+  role:          "admin",
+  createdAt:     &lt;timestamp&gt;
+}</pre>
+      </li>
+      <li>Sign in on the <a href="#/admin/login">Admin Portal</a>.</li>
+    </ol>
+    <a class="btn btn-outline btn-block" href="#/admin/login" style="margin-top:16px">Back to Admin Login</a>
+  `));
+}
+
+/* ---------------------------------------------------------------------------
+   13. STUDENT PORTAL
+   --------------------------------------------------------------------------- */
+function viewStudentDashboard(user) {
+  const reports = reportsForStudent(user.uid);
+  const pending = reports.filter(r => r.status === "Pending" || r.status === "Under Review").length;
+  const resolved = reports.filter(r => r.status === "Resolved").length;
+  const latest = reports[0];
+  mount(studentShell("home", `
+    <div class="card" style="background:var(--navy);border-color:var(--navy);color:#fff;margin-bottom:20px">
+      <p style="margin:0;color:#9CC4EA;font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase">Student Portal</p>
+      <h1 style="color:#fff;margin:6px 0 4px;font-size:1.5rem">Welcome, ${esc(user.fullName)}</h1>
+      <p style="color:#C9D9EA;margin:0">Student Number: <strong style="color:#fff">${esc(user.studentNumber)}</strong></p>
+      <div class="row" style="margin-top:16px;gap:10px">
+        <span class="badge" style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.2)">${reports.length} report${reports.length === 1 ? "" : "s"} submitted</span>
+        ${pending ? `<span class="badge" style="background:rgba(127,182,236,.2);color:#fff;border-color:rgba(127,182,236,.35)">${pending} in progress</span>` : ""}
+        ${resolved ? `<span class="badge" style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.2)">${resolved} resolved</span>` : ""}
+      </div>
+    </div>
+    ${latest ? `
+      <a class="card" href="#/student/reports/${encodeURIComponent(latest.id)}" style="display:block;text-decoration:none;color:inherit;margin-bottom:20px">
+        <div class="row-between">
+          <div>
+            <p style="margin:0;font-size:.72rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--grey-500)">Latest report</p>
+            <p style="margin:4px 0 0;font-weight:800">${esc(latest.reportId)} · ${esc(latest.incidentType)}</p>
+          </div>
+          ${statusBadge(latest.status)}
+        </div>
+        ${latest.adminUpdate ? `<p class="text-sm" style="margin:12px 0 0;color:var(--grey-600)"><strong>Update:</strong> ${esc(latest.adminUpdate)}</p>` : ""}
+      </a>` : ""}
+    <p class="section-title">What would you like to do?</p>
+    <div class="tiles">
+      <a class="tile" href="#/student/report"><span class="tile-icon">${I.alert}</span><span><span class="tile-title">Report an Incident</span><br><span class="tile-sub">Tell us what happened — it takes under a minute.</span></span></a>
+      <a class="tile" href="#/student/reports"><span class="tile-icon">${I.list}</span><span><span class="tile-title">My Reports</span><br><span class="tile-sub">Track the status of everything you've submitted.</span></span></a>
+      <a class="tile urgent" href="#/student/emergency"><span class="tile-icon">${I.phone}</span><span><span class="tile-title">Emergency</span><br><span class="tile-sub">Emergency contacts and what to do right now.</span></span></a>
+      <a class="tile" href="#/student/safety"><span class="tile-icon">${I.shieldSm}</span><span><span class="tile-title">Safety Information</span><br><span class="tile-sub">Guidance for staying safe on campus.</span></span></a>
+      <a class="tile" href="#/student/profile"><span class="tile-icon">${I.user}</span><span><span class="tile-title">My Profile</span><br><span class="tile-sub">Your account details and information.</span></span></a>
+    </div>
+    <p class="section-title">Quick links</p>
+    <div class="card">
+      <div class="row-between">
+        <div><strong>Campus Security</strong><p class="text-sm text-muted" style="margin:0">Available 24 hours a day</p></div>
+        <a class="btn btn-primary btn-sm" href="tel:0159628000">${I.phone} 015 962 8000</a>
+      </div>
+    </div>
+  `));
+}
+
+function viewReportForm(user) {
+  mount(studentShell("report", `
+    ${pageHeader("Report an Incident", "Give us as much detail as you can. Every report is reviewed by authorised safety personnel.")}
+    <div class="alert alert-info" style="margin-bottom:20px">
+      ${I.info}
+      <div>If someone is in immediate danger, phone Campus Security on <a href="tel:0159628000"><strong>015 962 8000</strong></a> first, then submit this report.</div>
+    </div>
+    <form id="reportForm" class="card" novalidate>
+      <div class="field">
+        <label class="label" for="incidentType">Incident Type <span class="req">*</span></label>
+        <select class="select" id="incidentType" required>
+          <option value="">Select incident type</option>
+          ${INCIDENT_TYPES.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join("")}
+        </select>
+        <div id="err-incidentType"></div>
+      </div>
+      <div class="field">
+        <label class="label" for="location">Location <span class="req">*</span></label>
+        <input class="input" type="text" id="location" placeholder="e.g. Main Campus, Residence B, Parking Lot 3" required>
+        <div id="err-location"></div>
+      </div>
+      <div class="form-grid two">
+        <div class="field">
+          <label class="label" for="incidentDate">Date <span class="req">*</span></label>
+          <input class="input" type="date" id="incidentDate" value="${todayISO()}" max="${todayISO()}" required>
+          <div id="err-incidentDate"></div>
+        </div>
+        <div class="field">
+          <label class="label" for="incidentTime">Time <span class="req">*</span></label>
+          <input class="input" type="time" id="incidentTime" value="${nowHM()}" required>
+          <div id="err-incidentTime"></div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label" for="description">Description <span class="req">*</span></label>
+        <textarea class="textarea" id="description" maxlength="1500" placeholder="Describe what happened, who was involved and anything else that may be useful." required></textarea>
+        <p class="hint"><span id="charCount">0</span> / 1500 characters</p>
+        <div id="err-description"></div>
+      </div>
+      <div class="field">
+        <label class="label" for="evidence">Upload Evidence <span class="text-muted" style="font-weight:600">(Optional)</span></label>
+        <label class="file-drop" for="evidence">
+          ${I.upload}
+          <p style="margin:8px 0 0;font-weight:700;font-size:.9rem">Tap to attach a photo or document</p>
+          <p class="hint" style="margin:4px 0 0">JPG, PNG or PDF · maximum 500 KB</p>
+          <input type="file" id="evidence" accept="image/jpeg,image/png,image/webp,application/pdf">
+        </label>
+        <div id="evidencePreview"></div>
+        <div id="err-evidence"></div>
+      </div>
+      <div id="reportAlert" class="sr-only" aria-live="polite"></div>
+      <button class="btn btn-primary btn-block btn-lg" type="submit" id="reportSubmit">Submit Report</button>
+      <p class="hint" style="text-align:center;margin-top:12px">Your report is confidential and only visible to you and authorised safety administrators.</p>
+    </form>
+  `), () => {
+    const form = $("#reportForm");
+    const description = $("#description");
+    const evidenceInput = $("#evidence");
+    let evidenceData = null;
+
+    description.addEventListener("input", () => {
+      $("#charCount").textContent = String(description.value.length);
+    });
+
+    evidenceInput.addEventListener("change", () => {
+      const file = evidenceInput.files && evidenceInput.files[0];
+      const preview = $("#evidencePreview");
+      const errorHolder = $("#err-evidence");
+      errorHolder.innerHTML = "";
+      evidenceData = null;
+      if (!file) { preview.innerHTML = ""; return; }
+      const allowed = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
+      if (!allowed.includes(file.type)) {
+        errorHolder.innerHTML = fieldError("err-evidence", "Please attach a JPG, PNG or PDF file.");
+        preview.innerHTML = ""; evidenceInput.value = ""; return;
+      }
+      if (file.size > 500 * 1024) {
+        errorHolder.innerHTML = fieldError("err-evidence", "That file is larger than 500 KB. Please choose a smaller file.");
+        preview.innerHTML = ""; evidenceInput.value = ""; return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        evidenceData = { name: file.name, type: file.type, dataUrl: String(reader.result) };
+        preview.innerHTML = `<div class="file-name">${I.file}<span>${esc(file.name)} · ${(file.size / 1024).toFixed(0)} KB</span></div>`;
+      };
+      reader.onerror = () => {
+        dbgErr("file read", reader.error);
+        errorHolder.innerHTML = fieldError("err-evidence", "We couldn't read that file. Please try another one.");
+      };
+      reader.readAsDataURL(file);
+    });
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      const values = {
+        incidentType: $("#incidentType").value,
+        location: $("#location").value.trim(),
+        date: $("#incidentDate").value,
+        time: $("#incidentTime").value,
+        description: description.value.trim()
+      };
+      const errors = {};
+      if (!values.incidentType) errors.incidentType = "Please select an incident type.";
+      if (!values.location) errors.location = "Please enter the location of the incident.";
+      if (!values.date) errors.incidentDate = "Please select the date.";
+      if (!values.time) errors.incidentTime = "Please select the time.";
+      if (!values.description) errors.description = "Please describe what happened.";
+      else if (values.description.length < 10) errors.description = "Please provide a little more detail.";
+
+      ["incidentType", "location", "incidentDate", "incidentTime", "description"].forEach(key => {
+        const holder = $("#err-" + key);
+        if (holder) holder.innerHTML = "";
+        const input = $("#" + key);
+        if (input) input.removeAttribute("aria-invalid");
+      });
+      if (Object.keys(errors).length) {
+        Object.entries(errors).forEach(([key, message]) => {
+          const holder = $("#err-" + key);
+          if (holder) holder.innerHTML = fieldError("err-" + key, message);
+          const input = $("#" + key);
+          if (input) input.setAttribute("aria-invalid", "true");
+        });
+        const first = $("#" + Object.keys(errors)[0]);
+        if (first) first.focus();
+        toast("Please complete the highlighted fields.", "error");
+        return;
+      }
+
+      const button = $("#reportSubmit");
+      const alertBox = $("#reportAlert");
+      setLoading(button, true, "Submitting report…");
+      alertBox.className = "alert alert-info";
+      alertBox.style.marginBottom = "16px";
+      alertBox.innerHTML = `<span class="spinner dark"></span><span>Submitting report…</span>`;
+      try {
+        const reportId = generateReportId();
+        await addDoc(collection(firestore, "reports"), {
+          reportId,
+          studentId: user.uid,
+          studentName: user.fullName,
+          studentNumber: user.studentNumber,
+          studentEmail: user.email,
+          incidentType: values.incidentType,
+          location: values.location,
+          date: values.date, time: values.time,
+          description: values.description,
+          evidenceUrl: evidenceData ? evidenceData.dataUrl : null,
+          evidenceName: evidenceData ? evidenceData.name : null,
+          status: "Pending",
+          adminUpdate: "",
+          updates: [],
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          updatedBy: null
+        });
+        showReportConfirmation(reportId);
+      } catch (error) {
+        dbgErr("submit report", error);
+        alertBox.className = "alert alert-error";
+        alertBox.style.marginBottom = "16px";
+        alertBox.innerHTML = `${I.info}<span>We couldn't submit your report. Please check your connection and try again.</span>`;
+        toast("We couldn't submit your report. Please try again.", "error");
+        setLoading(button, false);
+      }
+    });
+  });
+}
+
+function showReportConfirmation(reportId) {
+  mount(studentShell("report", `
+    <div class="card confirm-box">
+      <div class="confirm-check">${I.checkBig}</div>
+      <h1>REPORT SUBMITTED</h1>
+      <p class="text-muted">Your report has been successfully submitted.</p>
+      <p class="text-sm text-muted" style="margin:18px 0 4px">Report ID</p>
+      <div class="report-id-box">${esc(reportId)}</div>
+      <p style="margin:0 0 20px">Status: ${statusBadge("Pending")}</p>
+      <p class="text-muted text-sm" style="max-width:420px;margin:0 auto 24px">Our authorised safety personnel will review your report. You will see status changes and administrator updates under My Reports.</p>
+      <div class="row" style="justify-content:center">
+        <a class="btn btn-primary btn-lg" href="#/student/reports">${I.list} View My Reports</a>
+      </div>
+    </div>
+  `));
+}
+
+function viewStudentReports(user) {
+  const reports = reportsForStudent(user.uid);
+  const content = reports.length === 0
+    ? `<div class="card">${emptyState("No reports yet", "When you submit a safety incident report it will appear here with its live status.", `<a class="btn btn-primary" href="#/student/report">${I.alert} Report an Incident</a>`)}</div>`
+    : `<div class="stack">
+        ${reports.map(report => `
+          <a class="report-card" href="#/student/reports/${encodeURIComponent(report.id)}">
+            <div class="rc-top">
+              <div>
+                <div class="rc-id">Report #${esc(report.reportId)}</div>
+                <div class="text-sm text-muted">${esc(report.incidentType)}</div>
+              </div>
+              ${statusBadge(report.status)}
+            </div>
+            <dl class="rc-meta">
+              <dt>Location</dt><dd>${esc(report.location)}</dd>
+              <dt>Date</dt><dd>${fmtDate(report.date)}${report.time ? ", " + fmtTime(report.time) : ""}</dd>
+            </dl>
+            ${report.adminUpdate ? `<div class="alert alert-info" style="margin-top:12px">${I.info}<div><strong>Administrator update:</strong> ${esc(report.adminUpdate)}</div></div>` : ""}
+            <div class="row-between" style="margin-top:12px">
+              <span class="text-sm text-muted">Last updated ${fmtDateTime(report.updatedAt)}</span>
+              <span class="text-sm" style="font-weight:700;color:var(--blue)">View details ${I.chevron}</span>
+            </div>
+          </a>`).join("")}
+      </div>`;
+  mount(studentShell("reports", `
+    ${pageHeader("My Reports", `${reports.length} report${reports.length === 1 ? "" : "s"} submitted`)}
+    ${content}
+  `));
+}
+
+function viewStudentReportDetail(user, reportId) {
+  const report = db.reports[reportId];
+  if (!report || report.studentId !== user.uid) {
+    mount(studentShell("reports", `
+      ${pageHeader("Report not found", "We couldn't find that report.", "#/student/reports")}
+      <div class="card">${emptyState("Report unavailable", "This report does not exist or you do not have permission to view it.", `<a class="btn btn-primary" href="#/student/reports">Back to My Reports</a>`)}</div>
+    `));
+    return;
+  }
+  const timeline = (report.updates || []).slice().sort((a, b) => new Date(a.at) - new Date(b.at));
+  mount(studentShell("reports", `
+    ${pageHeader(`Report #${report.reportId}`, "Track the progress of your report.", "#/student/reports")}
+    <div class="card" style="margin-bottom:16px">
+      <div class="row-between" style="margin-bottom:6px">
+        <strong style="font-size:1.05rem">${esc(report.incidentType)}</strong>
+        ${statusBadge(report.status)}
+      </div>
+      <p class="text-sm text-muted" style="margin:0">Submitted ${fmtDateTime(report.createdAt)}</p>
+    </div>
+    ${report.adminUpdate ? `<div class="alert alert-info" style="margin-bottom:16px">${I.info}<div><strong>Administrator Update</strong><br>${esc(report.adminUpdate)}<div class="text-sm" style="margin-top:6px;opacity:.8">Updated ${fmtDateTime(report.updatedAt)}</div></div></div>` : ""}
+    <div class="card" style="margin-bottom:16px">
+      <h2>Report details</h2>
+      <div class="detail-list">
+        <div class="dl-row"><div class="dl-key">Report ID</div><div class="dl-val mono">${esc(report.reportId)}</div></div>
+        <div class="dl-row"><div class="dl-key">Incident Type</div><div class="dl-val">${esc(report.incidentType)}</div></div>
+        <div class="dl-row"><div class="dl-key">Location</div><div class="dl-val">${esc(report.location)}</div></div>
+        <div class="dl-row"><div class="dl-key">Date &amp; Time</div><div class="dl-val">${fmtDate(report.date)}${report.time ? ", " + fmtTime(report.time) : ""}</div></div>
+        <div class="dl-row"><div class="dl-key">Description</div><div class="dl-val" style="font-weight:500;white-space:pre-wrap">${esc(report.description)}</div></div>
+        <div class="dl-row"><div class="dl-key">Status</div><div class="dl-val">${statusBadge(report.status)}</div></div>
+      </div>
+    </div>
+    ${report.evidenceUrl ? `
+      <div class="card" style="margin-bottom:16px">
+        <h2>Evidence</h2>
+        ${report.evidenceUrl.startsWith("data:image")
+          ? `<img class="evidence-thumb" src="${report.evidenceUrl}" alt="Evidence attached to report ${esc(report.reportId)}">`
+          : `<a class="btn btn-outline" href="${report.evidenceUrl}" target="_blank" rel="noopener">${I.file} View attached document</a>`}
+        <p class="hint" style="margin-top:10px">${esc(report.evidenceName || "Attached file")}</p>
+      </div>` : ""}
+    ${timeline.length ? `
+      <div class="card">
+        <h2>Progress timeline</h2>
+        <ul class="timeline">
+          <li>
+            <div class="tl-time">${fmtDateTime(report.createdAt)}</div>
+            <div class="tl-head">Report submitted</div>
+            <div class="tl-body">Your report was received and is awaiting review.</div>
+          </li>
+          ${timeline.map(item => `
+            <li>
+              <div class="tl-time">${fmtDateTime(item.at)}</div>
+              <div class="tl-head">${esc(item.status || "Update")}</div>
+              ${item.text ? `<div class="tl-body">${esc(item.text)}</div>` : ""}
+              ${item.by ? `<div class="tl-time" style="margin-top:4px">By ${esc(item.by)}</div>` : ""}
+            </li>`).join("")}
+        </ul>
+      </div>` : ""}
+    <div style="margin-top:16px"><a class="btn btn-outline btn-block" href="#/student/reports">${I.back} Back to My Reports</a></div>
+  `));
+}
+
+function viewEmergency(role) {
+  const backHref = role === "admin" ? "#/admin" : "#/student";
+  const content = `
+    <div class="card" style="background:var(--navy);border-color:var(--navy);color:#fff;margin-bottom:20px">
+      <h1 style="color:#fff;margin-bottom:6px">Emergency</h1>
+      <p style="color:#C9D9EA;margin:0">If someone is in immediate danger, phone Campus Security now. Do not wait to submit an online report first.</p>
+      <a class="btn btn-accent btn-lg btn-block" style="margin-top:18px" href="tel:0159628000">${I.phone} Call Campus Security — 015 962 8000</a>
+    </div>
+    <p class="section-title">Emergency contacts</p>
+    <div class="stack">
+      ${EMERGENCY_CONTACTS.map(contact => `
+        <div class="card">
+          <div class="row-between">
+            <div style="flex:1;min-width:200px">
+              <strong>${esc(contact.name)}</strong>
+              <p class="text-sm text-muted" style="margin:4px 0 0">${esc(contact.note)}</p>
+            </div>
+            <a class="btn btn-primary btn-sm" href="tel:${esc(contact.number.replace(/\s/g, ""))}">${I.phone} ${esc(contact.number)}</a>
+          </div>
+        </div>`).join("")}
+    </div>
+    <p class="section-title">What to do right now</p>
+    <div class="card">
+      <ol style="margin:0;padding-left:20px;line-height:1.9">
+        <li><strong>Stay calm</strong> and move away from immediate danger.</li>
+        <li><strong>Phone the emergency number</strong> for your situation.</li>
+        <li>Give your <strong>name, exact location</strong> and what happened.</li>
+        <li>Do <strong>not hang up</strong> until the operator tells you to.</li>
+        <li><strong>Log the incident</strong> in UNIVEN SAFE afterwards so it can be tracked.</li>
+      </ol>
+      ${role === "student" ? `<a class="btn btn-outline btn-block" style="margin-top:16px" href="#/student/report">${I.alert} Log this incident in UNIVEN SAFE</a>` : ""}
+    </div>
+    <div class="alert alert-warn" style="margin-top:20px">${I.info}<div>Emergency numbers are provided as guidance. Always confirm the current numbers with your institution's Safety Office.</div></div>
+  `;
+  mount(role === "admin"
+    ? adminShell("dashboard", pageHeader("Emergency Information", "University emergency contacts and procedures.", backHref) + content, currentUser())
+    : studentShell("safety", pageHeader("Emergency", "Immediate help and emergency contacts.", backHref) + content));
+}
+
+function viewSafetyInfo(role) {
+  const backHref = role === "admin" ? "#/admin" : "#/student";
+  const categories = db.safety || defaultSafety();
+  const content = `
+    <p class="text-muted" style="margin-bottom:20px">Practical guidance for staying safe on and around campus. Tap a section to read more.</p>
+    <div class="stack">
+      ${categories.map((cat, index) => `
+        <details class="card" ${index === 0 ? "open" : ""} style="padding:0">
+          <summary style="cursor:pointer;padding:16px 18px;font-weight:800;color:var(--navy);list-style:none;display:flex;align-items:center;gap:10px">
+            <span style="color:var(--blue)">${I.shieldSm}</span>
+            <span style="flex:1">${esc(cat.title)}</span>
+            <span style="color:var(--grey-500)">${I.chevron}</span>
+          </summary>
+          <ul style="margin:0;padding:0 18px 18px 40px;line-height:1.8;color:var(--navy-700);font-size:.92rem">
+            ${cat.items.map(item => `<li>${esc(item)}</li>`).join("")}
+          </ul>
+        </details>`).join("")}
+    </div>
+    <div class="alert alert-info" style="margin-top:20px">${I.info}<div>Something missing or out of date? Report it so the Safety Office can update it.</div></div>
+  `;
+  mount(role === "admin"
+    ? adminShell("safety", pageHeader("Safety Information", "Published safety guidance for students.", backHref) + content, currentUser())
+    : studentShell("safety", pageHeader("Safety Information", "Guidance to help you stay safe.", backHref) + content));
+}
+
+function viewProfile(role, user) {
+  const isAdmin = role === "admin";
+  const reportCount = isAdmin ? allReports().length : reportsForStudent(user.uid).length;
+  const content = `
+    <div class="card" style="margin-bottom:16px">
+      <div class="row" style="gap:16px;align-items:center">
+        <div style="width:64px;height:64px;border-radius:16px;background:var(--blue-50);color:var(--blue-600);display:flex;align-items:center;justify-content:center;flex:none">
+          ${isAdmin ? I.shieldSm : I.user}
+        </div>
+        <div>
+          <h2 style="margin:0">${esc(user.fullName)}</h2>
+          <p class="text-muted text-sm" style="margin:2px 0 0">${esc(user.email)}</p>
+          <span class="badge ${isAdmin ? "st-progress" : "st-review"}" style="margin-top:8px">${isAdmin ? I.shieldSm : I.user}${isAdmin ? "Administrator" : "Student"}</span>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <h2>Account details</h2>
+      <div class="detail-list">
+        <div class="dl-row"><div class="dl-key">Full Name</div><div class="dl-val">${esc(user.fullName)}</div></div>
+        ${isAdmin ? "" : `<div class="dl-row"><div class="dl-key">Student Number</div><div class="dl-val mono">${esc(user.studentNumber)}</div></div>`}
+        <div class="dl-row"><div class="dl-key">Email</div><div class="dl-val">${esc(user.email)}</div></div>
+        <div class="dl-row"><div class="dl-key">Account Created</div><div class="dl-val">${fmtDateTime(user.createdAt)}</div></div>
+        <div class="dl-row"><div class="dl-key">${isAdmin ? "Total Reports" : "Reports Submitted"}</div><div class="dl-val">${reportCount}</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Update profile</h2>
+      <form id="profileForm" novalidate>
+        <div class="field">
+          <label class="label" for="profileName">Full Name</label>
+          <input class="input" type="text" id="profileName" value="${esc(user.fullName)}" required>
+          <div id="err-profileName"></div>
+        </div>
+        ${isAdmin ? "" : `
+        <div class="field">
+          <label class="label" for="profileNumber">Student Number</label>
+          <input class="input" type="text" id="profileNumber" value="${esc(user.studentNumber)}" disabled>
+          <p class="hint">Student numbers are verified by the university and cannot be changed here.</p>
+        </div>`}
+        <div class="field">
+          <label class="label" for="profileEmail">Email Address</label>
+          <input class="input" type="email" id="profileEmail" value="${esc(user.email)}" disabled>
+          <p class="hint">Contact the Safety Office if your email address needs to change.</p>
+        </div>
+        <div id="profileAlert" class="sr-only" aria-live="polite"></div>
+        <button class="btn btn-primary" type="submit" id="profileSubmit">Save Changes</button>
+      </form>
+    </div>
+  `;
+  mount(isAdmin
+    ? adminShell("profile", pageHeader("My Profile", "Your administrator account.", "#/admin") + content, user)
+    : studentShell("profile", pageHeader("My Profile", "Your UNIVEN SAFE account.", "#/student") + content),
+  () => {
+    $("#profileForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const alertBox = $("#profileAlert");
+      const name = $("#profileName").value.trim();
+      if (!name || name.length < 3) {
+        $("#err-profileName").innerHTML = fieldError("err-profileName", "Please enter your full name.");
+        $("#profileName").setAttribute("aria-invalid", "true");
+        return;
+      }
+      $("#err-profileName").innerHTML = "";
+      $("#profileName").removeAttribute("aria-invalid");
+      const button = $("#profileSubmit");
+      setLoading(button, true, "Saving…");
+      try {
+        await updateDoc(doc(firestore, "users", user.uid), {
+          fullName: name,
+          updatedAt: serverTimestamp()
+        });
+        if (db.users[user.uid]) db.users[user.uid].fullName = name;
+        currentUserObj = Object.assign({}, currentUserObj, { fullName: name });
+        alertBox.className = "alert alert-success";
+        alertBox.style.marginBottom = "16px";
+        alertBox.innerHTML = `${I.check}<span>Profile updated successfully.</span>`;
+        toast("Profile updated successfully.", "success");
+      } catch (error) {
+        dbgErr("profile update", error);
+        alertBox.className = "alert alert-error";
+        alertBox.style.marginBottom = "16px";
+        alertBox.innerHTML = `${I.info}<span>We couldn't save your changes. Please try again.</span>`;
+      } finally {
+        setLoading(button, false);
+      }
+    });
+  });
+}
+
+/* ---------------------------------------------------------------------------
+   14. ADMIN PORTAL
+   --------------------------------------------------------------------------- */
+function viewAdminDashboard(user) {
+  const reports = allReports();
+  const stats = [
+    { label: "Total Reports", value: reports.length, accent: true },
+    { label: "Pending", value: countByStatus(reports, "Pending") },
+    { label: "Under Review", value: countByStatus(reports, "Under Review") },
+    { label: "In Progress", value: countByStatus(reports, "In Progress") },
+    { label: "Resolved", value: countByStatus(reports, "Resolved") }
+  ];
+  const recent = reports.slice(0, 6);
+  mount(adminShell("dashboard", `
+    <div class="row-between" style="margin-bottom:20px">
+      <div>
+        <h1 style="margin-bottom:2px">Admin Dashboard</h1>
+        <p class="text-muted" style="margin:0">Signed in as ${esc(user.fullName)} · ${esc(user.email)}</p>
+      </div>
+      <a class="btn btn-primary btn-sm" href="#/admin/reports">${I.list} Manage Reports</a>
+    </div>
+    <div class="stats">
+      ${stats.map(stat => `
+        <div class="stat ${stat.accent ? "accent" : ""}">
+          <div class="stat-label">${esc(stat.label)}</div>
+          <div class="stat-value">${stat.value}</div>
+        </div>`).join("")}
+    </div>
+    <p class="section-title">Most recent reports</p>
+    <div class="card card--flush">
+      ${recent.length === 0
+        ? emptyState("No reports yet", "Reports submitted by students will appear here in real time.")
+        : `<div class="data-head"><span>Report ID</span><span>Incident</span><span>Location</span><span>Student</span><span>Status</span><span>Date</span></div>
+           ${recent.map(report => `
+             <a class="data-row" href="#/admin/reports/${encodeURIComponent(report.id)}">
+               <div class="dr-cell" data-label="Report ID"><strong class="mono">${esc(report.reportId)}</strong></div>
+               <div class="dr-cell" data-label="Incident">${esc(report.incidentType)}</div>
+               <div class="dr-cell" data-label="Location">${esc(report.location)}</div>
+               <div class="dr-cell" data-label="Student">${esc(report.studentName)}</div>
+               <div class="dr-cell" data-label="Status">${statusBadge(report.status)}</div>
+               <div class="dr-cell" data-label="Date">${fmtDate(report.date)}</div>
+             </a>`).join("")}`}
+    </div>
+    <div style="margin-top:16px" class="row">
+      <a class="btn btn-outline btn-sm" href="#/admin/reports">View all reports</a>
+      <a class="btn btn-outline btn-sm" href="#/admin/students">View students</a>
+    </div>
+  `, user));
+}
+
+function viewAdminReports(user) {
+  mount(adminShell("reports", `
+    ${pageHeader("Reports", "Search, filter and manage all submitted safety reports.")}
+    <div class="card" style="margin-bottom:16px">
+      <div class="field" style="margin-bottom:12px">
+        <label class="label" for="reportSearch">Search reports</label>
+        <input class="input" type="search" id="reportSearch" placeholder="Search by report ID, incident, location, student number or name…">
+      </div>
+      <div class="row" id="statusFilters" role="group" aria-label="Filter by status">
+        <button class="btn btn-sm btn-primary" data-status="All" type="button">All</button>
+        ${STATUSES.map(status => `<button class="btn btn-sm btn-outline" data-status="${esc(status)}" type="button">${esc(status)}</button>`).join("")}
+      </div>
+    </div>
+    <div id="reportsList"></div>
+  `, user), () => {
+    let activeStatus = "All";
+    let searchTerm = "";
+    const searchInput = $("#reportSearch");
+    const listHolder = $("#reportsList");
+    const filterButtons = $$("#statusFilters button");
+    function applyFilters() {
+      const term = searchTerm.trim().toLowerCase();
+      return allReports().filter(report => {
+        if (activeStatus !== "All" && report.status !== activeStatus) return false;
+        if (!term) return true;
+        return [report.reportId, report.incidentType, report.location, report.studentName, report.studentNumber, report.status]
+          .some(field => String(field || "").toLowerCase().includes(term));
+      });
+    }
+    function draw() {
+      const results = applyFilters();
+      if (!results.length) {
+        listHolder.innerHTML = `<div class="card">${emptyState("No matching reports", searchTerm || activeStatus !== "All" ? "Try a different search term or filter." : "Reports submitted by students will appear here in real time.")}</div>`;
+        return;
+      }
+      listHolder.innerHTML = `
+        <p class="text-sm text-muted" style="margin-bottom:10px">Showing ${results.length} of ${allReports().length} reports</p>
+        <div class="card card--flush">
+          <div class="data-head"><span>Report ID</span><span>Incident</span><span>Location</span><span>Student</span><span>Status</span><span>Date</span></div>
+          ${results.map(report => `
+            <a class="data-row" href="#/admin/reports/${encodeURIComponent(report.id)}">
+              <div class="dr-cell" data-label="Report ID"><strong class="mono">${esc(report.reportId)}</strong></div>
+              <div class="dr-cell" data-label="Incident">${esc(report.incidentType)}</div>
+              <div class="dr-cell" data-label="Location">${esc(report.location)}</div>
+              <div class="dr-cell" data-label="Student">${esc(report.studentName)}<div class="text-sm text-muted">${esc(report.studentNumber || "")}</div></div>
+              <div class="dr-cell" data-label="Status">${statusBadge(report.status)}</div>
+              <div class="dr-cell" data-label="Date">${fmtDate(report.date)}</div>
+            </a>`).join("")}
+        </div>`;
+    }
+    searchInput.addEventListener("input", () => { searchTerm = searchInput.value; draw(); });
+    filterButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        activeStatus = button.dataset.status;
+        filterButtons.forEach(b => {
+          const isActive = b === button;
+          b.className = "btn btn-sm " + (isActive ? "btn-primary" : "btn-outline");
+          b.setAttribute("aria-pressed", isActive ? "true" : "false");
+        });
+        draw();
+      });
+      button.setAttribute("aria-pressed", button.dataset.status === "All" ? "true" : "false");
+    });
+    draw();
+  });
+}
+
+function viewAdminReportDetail(user, reportId) {
+  const report = db.reports[reportId];
+  if (!report) {
+    mount(adminShell("reports", `
+      ${pageHeader("Report not found", "That report does not exist.", "#/admin/reports")}
+      <div class="card">${emptyState("Report unavailable", "It may have been removed or the link may be incorrect.", `<a class="btn btn-primary" href="#/admin/reports">Back to Reports</a>`)}</div>
+    `, user));
+    return;
+  }
+  const timeline = (report.updates || []).slice().sort((a, b) => new Date(a.at) - new Date(b.at));
+  mount(adminShell("reports", `
+    ${pageHeader(`Report #${report.reportId}`, `Submitted ${fmtDateTime(report.createdAt)}`, "#/admin/reports")}
+    <div class="card" style="margin-bottom:16px">
+      <div class="row-between">
+        <div><span class="badge ${STATUS_META[report.status].cls}">${I[STATUS_META[report.status].icon]}${esc(report.status)}</span></div>
+        <span class="text-sm text-muted">Last updated ${fmtDateTime(report.updatedAt)}</span>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <h2>Report information</h2>
+      <div class="detail-list">
+        <div class="dl-row"><div class="dl-key">Student</div><div class="dl-val">${esc(report.studentName)}</div></div>
+        <div class="dl-row"><div class="dl-key">Student Number</div><div class="dl-val mono">${esc(report.studentNumber)}</div></div>
+        <div class="dl-row"><div class="dl-key">Student Email</div><div class="dl-val">${esc(report.studentEmail || "—")}</div></div>
+        <div class="dl-row"><div class="dl-key">Incident Type</div><div class="dl-val">${esc(report.incidentType)}</div></div>
+        <div class="dl-row"><div class="dl-key">Location</div><div class="dl-val">${esc(report.location)}</div></div>
+        <div class="dl-row"><div class="dl-key">Date</div><div class="dl-val">${fmtDate(report.date)}</div></div>
+        <div class="dl-row"><div class="dl-key">Time</div><div class="dl-val">${fmtTime(report.time) || "—"}</div></div>
+        <div class="dl-row"><div class="dl-key">Description</div><div class="dl-val" style="font-weight:500;white-space:pre-wrap">${esc(report.description)}</div></div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <h2>Evidence</h2>
+      ${report.evidenceUrl
+        ? (report.evidenceUrl.startsWith("data:image")
+            ? `<img class="evidence-thumb" src="${report.evidenceUrl}" alt="Evidence attached to report ${esc(report.reportId)}"><p class="hint" style="margin-top:10px">${esc(report.evidenceName || "")}</p>`
+            : `<a class="btn btn-outline" href="${report.evidenceUrl}" target="_blank" rel="noopener">${I.file} View Evidence</a>`)
+        : `<p class="text-muted text-sm" style="margin:0">No evidence was attached to this report.</p>`}
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <h2>Manage report</h2>
+      <form id="adminReportForm" novalidate>
+        <div class="field">
+          <label class="label" for="statusSelect">Current Status</label>
+          <select class="select" id="statusSelect">
+            ${STATUSES.map(status => `<option value="${esc(status)}" ${status === report.status ? "selected" : ""}>${esc(status)}</option>`).join("")}
+          </select>
+        </div>
+        <div class="field">
+          <label class="label" for="adminUpdate">Administrator Update</label>
+          <textarea class="textarea" id="adminUpdate" maxlength="800" placeholder="e.g. Security personnel have been notified.">${esc(report.adminUpdate || "")}</textarea>
+          <p class="hint">This update is visible to the student under My Reports.</p>
+        </div>
+        <div id="adminReportAlert" class="sr-only" aria-live="polite"></div>
+        <button class="btn btn-primary btn-block btn-lg" type="submit" id="adminSaveBtn">Save Changes</button>
+      </form>
+    </div>
+    ${timeline.length ? `
+      <div class="card">
+        <h2>Audit trail</h2>
+        <ul class="timeline">
+          <li>
+            <div class="tl-time">${fmtDateTime(report.createdAt)}</div>
+            <div class="tl-head">Report created</div>
+            <div class="tl-body">Submitted by ${esc(report.studentName)}</div>
+          </li>
+          ${timeline.map(item => `
+            <li>
+              <div class="tl-time">${fmtDateTime(item.at)}</div>
+              <div class="tl-head">${esc(item.status || "Status updated")}</div>
+              ${item.text ? `<div class="tl-body">${esc(item.text)}</div>` : ""}
+              ${item.by ? `<div class="tl-time" style="margin-top:4px">By ${esc(item.by)}</div>` : ""}
+            </li>`).join("")}
+        </ul>
+      </div>` : ""}
+  `, user), () => {
+    $("#adminReportForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const statusSelect = $("#statusSelect");
+      const updateField = $("#adminUpdate");
+      const alertBox = $("#adminReportAlert");
+      const button = $("#adminSaveBtn");
+      const newStatus = statusSelect.value;
+      const newUpdate = updateField.value.trim();
+      const current = db.reports[reportId];
+      if (!current) { toast("This report is no longer available.", "error"); go("#/admin/reports"); return; }
+      if (newStatus === current.status && newUpdate === (current.adminUpdate || "")) { toast("No changes to save."); return; }
+      setLoading(button, true, "Saving changes…");
+      alertBox.className = "alert alert-info";
+      alertBox.style.marginBottom = "16px";
+      alertBox.innerHTML = `<span class="spinner dark"></span><span>Saving changes…</span>`;
+      try {
+        const updates = Array.isArray(current.updates) ? current.updates.slice() : [];
+        updates.push({
+          status: newStatus,
+          text: newUpdate || (newStatus !== current.status ? `Status changed to ${newStatus}.` : ""),
+          at: new Date().toISOString(),
+          by: user.fullName
+        });
+        await updateDoc(doc(firestore, "reports", reportId), {
+          status: newStatus,
+          adminUpdate: newUpdate,
+          updates,
+          updatedAt: serverTimestamp(),
+          updatedBy: user.fullName
+        });
+        alertBox.className = "alert alert-success";
+        alertBox.style.marginBottom = "16px";
+        alertBox.innerHTML = `${I.check}<span>Changes saved. The student can now see this update.</span>`;
+        toast("Changes saved successfully.", "success");
+      } catch (error) {
+        dbgErr("admin save", error);
+        alertBox.className = "alert alert-error";
+        alertBox.style.marginBottom = "16px";
+        alertBox.innerHTML = `${I.info}<span>We couldn't save your changes. Please check your connection and try again.</span>`;
+        toast("We couldn't save your changes.", "error");
+      } finally {
+        setLoading(button, false);
+      }
+    });
+  });
+}
+
+function viewAdminStudents(user) {
+  const students = Object.values(db.users).filter(u => u.role === "student");
+  const reports = allReports();
+  const rows = students.map(student => {
+    const studentReports = reports.filter(r => r.studentId === student.uid);
+    const open = studentReports.filter(r => r.status !== "Resolved" && r.status !== "Closed").length;
+    return { student, count: studentReports.length, open };
+  }).sort((a, b) => b.count - a.count);
+  mount(adminShell("students", `
+    ${pageHeader("Students", `${students.length} registered student account${students.length === 1 ? "" : "s"}`)}
+    ${rows.length === 0
+      ? `<div class="card">${emptyState("No students yet", "Students who register for UNIVEN SAFE will appear here.")}</div>`
+      : `<div class="card card--flush">
+          ${rows.map(({ student, count, open }) => `
+            <div class="data-row" style="cursor:default">
+              <div class="dr-cell" data-label="Name"><strong>${esc(student.fullName)}</strong></div>
+              <div class="dr-cell" data-label="Student Number"><span class="mono">${esc(student.studentNumber)}</span></div>
+              <div class="dr-cell" data-label="Email">${esc(student.email)}</div>
+              <div class="dr-cell" data-label="Reports">${count} total · ${open} open</div>
+              <div class="dr-cell" data-label="Registered">${fmtDate((student.createdAt || "").slice(0, 10))}</div>
+              <div class="dr-cell" data-label="Action"><a class="btn btn-sm btn-outline" href="#/admin/reports">View reports</a></div>
+            </div>`).join("")}
+         </div>`}
+    <div class="alert alert-info" style="margin-top:16px">${I.info}<div>Student records are read-only here. Personal information is only visible to authorised safety administrators.</div></div>
+  `, user));
+}
+
+function viewAdminSafety(user) {
+  const categories = db.safety || defaultSafety();
+  mount(adminShell("safety", `
+    ${pageHeader("Safety Information", "Edit the safety guidance published to students.")}
+    <form id="safetyForm">
+      ${categories.map(category => `
+        <div class="card" style="margin-bottom:16px">
+          <div class="field">
+            <label class="label" for="title-${esc(category.id)}">Section Title</label>
+            <input class="input" type="text" id="title-${esc(category.id)}" value="${esc(category.title)}" data-role="title" data-id="${esc(category.id)}">
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label class="label" for="items-${esc(category.id)}">Guidance (one point per line)</label>
+            <textarea class="textarea" id="items-${esc(category.id)}" data-role="items" data-id="${esc(category.id)}" style="min-height:150px">${esc(category.items.join("\n"))}</textarea>
+          </div>
+        </div>`).join("")}
+      <div id="safetyAlert" class="sr-only" aria-live="polite"></div>
+      <button class="btn btn-primary btn-lg" type="submit" id="safetySaveBtn">Save Safety Information</button>
+    </form>
+  `, user), () => {
+    $("#safetyForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const button = $("#safetySaveBtn");
+      const alertBox = $("#safetyAlert");
+      setLoading(button, true, "Saving…");
+      try {
+        const nextCategories = categories.map(cat => {
+          const titleInput = $(`[data-role="title"][data-id="${cat.id}"]`);
+          const itemsInput = $(`[data-role="items"][data-id="${cat.id}"]`);
+          return {
+            id: cat.id,
+            title: titleInput ? titleInput.value.trim() || cat.title : cat.title,
+            items: itemsInput ? itemsInput.value.split("\n").map(l => l.trim()).filter(Boolean) : cat.items
+          };
+        });
+        await setDoc(doc(firestore, "safety", "info"), {
+          categories: nextCategories,
+          updatedAt: serverTimestamp(),
+          updatedBy: user.fullName
+        });
+        db.safety = nextCategories;
+        alertBox.className = "alert alert-success";
+        alertBox.style.marginBottom = "16px";
+        alertBox.innerHTML = `${I.check}<span>Safety information updated. Students will see the changes immediately.</span>`;
+        toast("Safety information saved.", "success");
+      } catch (error) {
+        dbgErr("safety save", error);
+        alertBox.className = "alert alert-error";
+        alertBox.style.marginBottom = "16px";
+        alertBox.innerHTML = `${I.info}<span>We couldn't save the safety information. Please try again.</span>`;
+      } finally {
+        setLoading(button, false);
+      }
+    });
+  });
+}
+
+function viewAdminSettings(user) {
+  const reports = allReports();
+  const students = Object.values(db.users).filter(u => u.role === "student");
+  mount(adminShell("settings", `
+    ${pageHeader("Settings", "System information and administrative actions.")}
+    <div class="card" style="margin-bottom:16px">
+      <h2>System information</h2>
+      <div class="detail-list">
+        <div class="dl-row"><div class="dl-key">Institution</div><div class="dl-val">${esc(db.settings.universityName || "University of Venda")}</div></div>
+        <div class="dl-row"><div class="dl-key">Signed in as</div><div class="dl-val">${esc(user.fullName)} (${esc(user.email)})</div></div>
+        <div class="dl-row"><div class="dl-key">Registered students</div><div class="dl-val">${students.length}</div></div>
+        <div class="dl-row"><div class="dl-key">Total reports</div><div class="dl-val">${reports.length}</div></div>
+        <div class="dl-row"><div class="dl-key">Firebase project</div><div class="dl-val mono">univen-safe</div></div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <h2>Role &amp; access control</h2>
+      <p class="text-sm text-muted">Two roles exist: <strong>student</strong> and <strong>admin</strong>. Access is enforced by Firestore Security Rules on the server — never by hiding buttons in the browser.</p>
+      <div class="alert alert-info">${I.info}<div>See the Firestore rules supplied with this project. They must be deployed before going live.</div></div>
+    </div>
+    <div class="card" style="border-color:#F3C4C4">
+      <h2 style="color:#8E2F2F">Session</h2>
+      <p class="text-sm text-muted">Sign out of your administrator session on this device.</p>
+      <button class="btn btn-outline" type="button" style="border-color:#F3C4C4;color:#8E2F2F" data-action="logout">${I.logout} Sign out</button>
+    </div>
+  `, user));
+}
+
+function viewNotFound() {
+  mount(`
+    <header class="topbar"><div class="topbar-inner">${brandMark()}</div></header>
+    <main id="main-content" class="page"><div class="container narrow">
+      <div class="card">
+        <h1>Page not found</h1>
+        <p class="text-muted">The page you're looking for doesn't exist.</p>
+        <a class="btn btn-primary" href="#/">Return to home</a>
+      </div>
+    </div></main>
+  `);
+}
+
+/* ---------------------------------------------------------------------------
+   15. LOADING HELPER
+   --------------------------------------------------------------------------- */
+function setLoading(button, isLoading, label) {
+  if (!button) return;
+  if (isLoading) {
+    if (!button.dataset.originalLabel) button.dataset.originalLabel = button.innerHTML;
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+    button.innerHTML = `<span class="spinner"></span><span>${esc(label || "Please wait…")}</span>`;
+  } else {
+    button.disabled = false;
+    button.removeAttribute("aria-busy");
+    if (button.dataset.originalLabel) {
+      button.innerHTML = button.dataset.originalLabel;
+      delete button.dataset.originalLabel;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   16. BOOT
+   --------------------------------------------------------------------------- */
+onAuthStateChanged(auth, async firebaseUser => {
+  firebaseReady = false;
+  dbg("onAuthStateChanged fired. firebaseUser:", firebaseUser ? firebaseUser.uid : null);
+
+  if (firebaseUser) {
+    if (!currentUserObj || currentUserObj.uid !== firebaseUser.uid) {
+      try {
+        const snap = await getDoc(doc(firestore, "users", firebaseUser.uid));
+        if (snap.exists()) {
+          const profile = normalizeDoc(snap.data());
+          profile.fullName      = profile.fullName      || "Student";
+          profile.studentNumber = profile.studentNumber || "—";
+          profile.email         = profile.email         || (firebaseUser.email || "");
+          profile.role          = profile.role          || "student";
+          currentUserObj = Object.assign({ uid: firebaseUser.uid }, profile);
+        } else {
+          currentUserObj = null;
+        }
+      } catch (error) {
+        dbgErr("onAuthStateChanged/getDoc", error);
+        if (!currentUserObj) currentUserObj = null;
+      }
+    }
+  } else {
+    currentUserObj = null;
+  }
+
+  if (currentUserObj) attachListeners();
+  else detachListeners();
+
+  firebaseReady = true;
+
+  if (!location.hash || location.hash === "#/" || location.hash === "#") {
+    if (currentUserObj && currentUserObj.role === "admin")  location.hash = "#/admin";
+    else if (currentUserObj && currentUserObj.role === "student") location.hash = "#/student";
+  }
+
+  render();
+});
+</script>
+</body>
+</html>
